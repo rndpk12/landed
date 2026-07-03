@@ -1,12 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
-import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm, type FieldError, type UseFormRegisterReturn } from 'react-hook-form';
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
-import { authApi } from '../services/authApi';
 
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email.'),
@@ -32,19 +30,17 @@ type FieldProps = {
   type: string;
 };
 
-const partners = ['LinkedIn', 'Indeed', 'Workday', 'Greenhouse', 'Instahyre', 'Lever', 'Ashby', 'Naukri'];
-
 const AuthField = ({ label, type, placeholder, autoComplete, error, registration }: FieldProps) => {
   const inputId = 'auth-' + registration.name;
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[13px] font-black uppercase text-black" htmlFor={inputId}>
+      <label className="text-[14px] font-black uppercase text-black" htmlFor={inputId}>
         {label}
       </label>
       <input
         id={inputId}
-        className={`h-12 w-full border-[3px] bg-[#fffaf1] px-4 text-[15px] font-black text-black outline-none transition placeholder:text-[#9a9489] focus:bg-white focus:shadow-[4px_4px_0_#000] xl:h-[54px] ${
+        className={`h-[56px] w-full border-[3px] bg-[#fffaf1] px-5 text-[16px] font-black text-black outline-none transition placeholder:text-[#9a9489] focus:bg-white focus:shadow-[4px_4px_0_#000] ${
           error ? 'border-[#ef4444]' : 'border-black'
         }`}
         type={type}
@@ -58,7 +54,7 @@ const AuthField = ({ label, type, placeholder, autoComplete, error, registration
 };
 
 export const LoginPage = () => {
-  const { login, register: createAccount, signInWithGoogle, isAuthenticated, loading } = useAuth();
+  const { login, register: createAccount, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -69,7 +65,6 @@ export const LoginPage = () => {
     searchParams.get('mode') === 'register' ? 'register' : 'login'
   );
   const [authError, setAuthError] = useState<string | null>(null);
-  const [googleSignInAvailable, setGoogleSignInAvailable] = useState(false);
 
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -84,20 +79,6 @@ export const LoginPage = () => {
   useEffect(() => {
     setMode(searchParams.get('mode') === 'register' ? 'register' : 'login');
   }, [searchParams]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    authApi.isGoogleSignInConfigured().then((isConfigured) => {
-      if (isMounted) {
-        setGoogleSignInAvailable(isConfigured);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   if (isAuthenticated()) {
     return <Navigate to="/dashboard" replace />;
@@ -123,21 +104,6 @@ export const LoginPage = () => {
     }
   };
 
-  const onGoogleSignIn = async (credentialResponse: CredentialResponse) => {
-    setAuthError(null);
-    if (!credentialResponse.credential) {
-      setAuthError('Google did not return a sign-in credential.');
-      return;
-    }
-
-    try {
-      await signInWithGoogle(credentialResponse.credential);
-      navigate(from, { replace: true });
-    } catch (error) {
-      setAuthError(error instanceof Error ? error.message : 'Could not sign in with Google. Please try again.');
-    }
-  };
-
   const switchMode = (next: AuthMode) => {
     setMode(next);
     setSearchParams(next === 'register' ? { mode: 'register' } : {});
@@ -148,76 +114,68 @@ export const LoginPage = () => {
 
   const isRegister = mode === 'register';
 
-  const AuthDivider = () => (
-    <div className="flex items-center gap-3 text-center text-[12px] font-black uppercase text-[#6f685f]">
-      <span className="h-[3px] flex-1 bg-black" />
-      or
-      <span className="h-[3px] flex-1 bg-black" />
-    </div>
-  );
-
-  const GoogleSignInButton = () => (
-    <div className={loading ? 'pointer-events-none opacity-70' : undefined}>
-      <GoogleLogin
-        onSuccess={onGoogleSignIn}
-        onError={() => setAuthError('Google login failed. Please try again.')}
-        shape="rectangular"
-        size="large"
-        text="signin_with"
-        theme="outline"
-        width="430"
-      />
-    </div>
-  );
-
   return (
-    <main className="landed-brutal brutal-grid min-h-dvh bg-[#fbf7ef] p-2 font-sans text-black sm:p-3">
-      <section className="grid min-h-[calc(100dvh-16px)] overflow-hidden border-[4px] border-black bg-[#fffaf1] shadow-[8px_8px_0_#000] sm:min-h-[calc(100dvh-24px)] lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="flex min-h-0 flex-col">
-          <div className="flex h-[64px] shrink-0 items-center justify-between border-b-[4px] border-black px-5 sm:h-[68px] sm:px-8">
+    <main className="landed-brutal min-h-dvh bg-[#fbf7ef] font-sans text-black">
+      <section className="flex min-h-dvh flex-col overflow-hidden bg-[#fffaf1]">
+        <header className="flex h-[88px] shrink-0 items-center justify-between border-b-[5px] border-black bg-[#fffaf1] px-6 sm:px-10 lg:px-[8%]">
+          <div className="flex items-center gap-10">
             <button
               type="button"
               onClick={() => navigate('/')}
               className="flex items-center gap-2 bg-transparent text-left"
             >
-              <span className="grid h-10 w-10 place-items-center border-[3px] border-black bg-[#f97316] font-black text-white shadow-[4px_4px_0_#000]">
+              <span className="grid h-11 w-11 place-items-center rounded-md border-[4px] border-black bg-[#f97316] text-lg font-black text-white shadow-[4px_4px_0_#000]">
                 L
               </span>
-              <span className="text-[22px] font-black italic">LANDED</span>
+              <span className="text-[28px] font-black italic">LANDED</span>
             </button>
+            <nav className="hidden items-center gap-8 text-[18px] font-black uppercase md:flex">
+              <span>Features</span>
+              <span>Pricing</span>
+              <span>FAQ</span>
+            </nav>
+          </div>
             <button
               type="button"
               onClick={() => switchMode(isRegister ? 'login' : 'register')}
-              className="border-[3px] border-black bg-white px-4 py-2 text-[12px] font-black uppercase shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
+              className="border-[4px] border-black bg-[#f97316] px-6 py-3 text-[16px] font-black uppercase text-white shadow-[5px_5px_0_#000] transition hover:-translate-y-0.5"
             >
-              {isRegister ? 'Log in' : 'Join free'}
+              {isRegister ? 'Log in' : 'Create account'}
             </button>
-          </div>
+        </header>
 
-          <div className="flex flex-1 flex-col justify-center px-5 py-6 sm:px-10 sm:py-7 lg:px-[12%] xl:px-[13%]">
-            <div className="w-full max-w-[520px]">
-              <div className="mb-5 inline-flex items-center gap-2 border-2 border-[#f3d8b9] bg-[#fff6e8] px-4 py-2 text-[13px] font-black uppercase text-[#7a3515] shadow-[3px_3px_0_rgba(0,0,0,0.12)]">
-                <Sparkles className="h-5 w-5 text-[#f97316]" />
-                {isRegister ? 'Start landing today' : 'Welcome back'}
-              </div>
-              <h1 className="text-[clamp(44px,4.7vw,76px)] font-black uppercase leading-[0.92]">
-                {isRegister ? 'Create your account.' : 'Sign in to Landed.'}
+        <div className="grid flex-1 lg:grid-cols-2">
+          <aside className="flex min-h-[360px] flex-col justify-center border-b-[5px] border-black bg-[#f97316] px-8 py-12 lg:min-h-0 lg:border-b-0 lg:border-r-[5px] lg:px-[10%]">
+            <div className="max-w-[760px]">
+              <h1 className="text-[clamp(76px,7.2vw,132px)] font-black uppercase leading-[0.82] tracking-normal text-black">
+                {isRegister ? 'Start landing' : 'Welcome back'}
               </h1>
-              <p className="mt-5 max-w-[500px] text-[17px] font-bold leading-7 text-[#555]">
+              <p className="mt-10 border-l-[5px] border-black pl-6 text-[clamp(24px,1.65vw,30px)] font-medium leading-tight text-black">
                 {isRegister
-                  ? 'Build one workspace for resumes, job links, interview notes, analytics, and every next move.'
+                  ? 'Create your workspace for resumes, job links, interview notes, analytics, and every next move.'
                   : 'Jump back into your pipeline with every application, resume version, and follow-up in sight.'}
+              </p>
+            </div>
+          </aside>
+
+          <div className="flex items-center justify-center bg-white px-6 py-12 sm:px-10 lg:px-[10%]">
+            <div className="w-full max-w-[620px]">
+              <h2 className="text-[clamp(36px,2.55vw,50px)] font-black uppercase leading-[0.95] text-[#211715]">
+                {isRegister ? 'Create your account' : 'Log in to your account'}
+              </h2>
+              <p className="mt-5 text-[22px] font-semibold leading-8 text-[#64748b]">
+                {isRegister ? 'Enter your details to create your dashboard.' : 'Enter your details to access your dashboard.'}
               </p>
 
               {authError ? (
-                <div className="mt-5 border-[3px] border-[#dc2626] bg-[#fee2e2] px-4 py-3 text-sm font-black text-[#991b1b] shadow-[4px_4px_0_#000]">
+                <div className="mt-8 border-[4px] border-[#dc2626] bg-[#fee2e2] px-5 py-4 text-base font-black text-[#991b1b] shadow-[5px_5px_0_#000]">
                   {authError}
                 </div>
               ) : null}
 
               {isRegister ? (
                 <form
-                  className="mt-7 flex w-full flex-col gap-4 text-left"
+                  className="mt-9 flex w-full flex-col gap-5 text-left"
                   onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                   noValidate
                 >
@@ -246,16 +204,10 @@ export const LoginPage = () => {
                     registration={registerForm.register('password')}
                   />
                   <AuthButton loading={loading} label="Create account" loadingLabel="Creating account..." />
-                  {googleSignInAvailable ? (
-                    <>
-                      <AuthDivider />
-                      <GoogleSignInButton />
-                    </>
-                  ) : null}
                 </form>
               ) : (
                 <form
-                  className="mt-7 flex w-full flex-col gap-4 text-left"
+                  className="mt-9 flex w-full flex-col gap-5 text-left"
                   onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   noValidate
                 >
@@ -276,82 +228,25 @@ export const LoginPage = () => {
                     registration={loginForm.register('password')}
                   />
                   <AuthButton loading={loading} label="Login / sign in" loadingLabel="Signing in..." />
-                  {googleSignInAvailable ? (
-                    <>
-                      <AuthDivider />
-                      <GoogleSignInButton />
-                    </>
-                  ) : null}
                 </form>
               )}
 
-              <p className="mt-5 text-[15px] font-bold text-[#555]">
+              <p className="mt-9 text-center text-[18px] font-semibold text-[#64748b]">
                 {isRegister ? 'Already have an account?' : 'New here?'}{' '}
                 <button
                   type="button"
                   onClick={() => switchMode(isRegister ? 'login' : 'register')}
-                  className="border-b-[3px] border-[#f97316] bg-transparent pb-0.5 font-black text-black focus:outline-none"
+                  className="border-b-[4px] border-[#f97316] bg-transparent pb-0.5 font-black text-black focus:outline-none"
                 >
                   {isRegister ? 'Sign in' : 'Create account'}
                 </button>
               </p>
+              <p className="mt-14 text-center text-[16px] font-semibold text-[#64748b]">
+                By continuing, you agree to Landed's{' '}
+                <span className="border-b-[3px] border-[#f97316] font-black text-black">Terms</span> and{' '}
+                <span className="border-b-[3px] border-[#f97316] font-black text-black">Privacy Policy</span>.
+              </p>
             </div>
-          </div>
-
-          <div className="shrink-0 border-t-[4px] border-black px-5 py-4 sm:px-8">
-            <p className="text-[11px] font-black uppercase text-[#555]">Works on top job platforms like</p>
-            <div className="relative mt-4 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
-              <div className="flex w-max animate-[platform-marquee_22s_linear_infinite] items-center gap-10 text-lg font-black text-[#b9b3a8]">
-                {[...partners, ...partners].map((partner, index) => (
-                  <span key={`${partner}-${index}`} className="shrink-0">
-                    {partner}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative hidden min-h-0 overflow-hidden border-l-[4px] border-black bg-[#09090b] text-white lg:block">
-          <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.18)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.18)_1px,transparent_1px)] [background-size:44px_44px]" />
-          <nav className="relative z-20 grid h-[68px] grid-cols-5 border-b-[4px] border-black bg-[#f97316] text-[12px] font-black uppercase text-white">
-            {['Roles', 'Resumes', 'Stages', 'Notes', 'Analytics'].map((item) => (
-              <span key={item} className="flex items-center justify-center border-r-[3px] border-black last:border-r-0">
-                {item}
-              </span>
-            ))}
-          </nav>
-
-          <div className="relative z-10 mx-auto mt-12 w-[80%] max-w-[620px] rotate-[-2deg] border-[4px] border-black bg-[#fffaf1] p-7 text-black shadow-[10px_10px_0_#000] xl:mt-16">
-            <div className="mb-5 flex items-center gap-2 border-b-[3px] border-black pb-4">
-              <span className="h-3 w-3 border-2 border-black bg-[#ef4444]" />
-              <span className="h-3 w-3 border-2 border-black bg-[#facc15]" />
-              <span className="h-3 w-3 border-2 border-black bg-[#22c55e]" />
-              <span className="ml-3 flex-1 border-2 border-black bg-white px-3 py-1 text-center text-[11px] font-black text-[#555]">
-                app.landed.dev/dashboard
-              </span>
-            </div>
-            <h2 className="text-[clamp(38px,3.2vw,54px)] font-black uppercase leading-none">Pipeline clarity</h2>
-            <p className="mt-4 text-[16px] font-bold leading-7 text-[#555]">
-              Applications, versions, stages, and follow-ups stay visible as the search gets busy.
-            </p>
-            <div className="mt-8 grid gap-3">
-              {['Resume vault synced', 'Interview loop active', 'Follow-up due Friday'].map((item) => (
-                <div className="flex items-center gap-3 border-[3px] border-black bg-white p-3" key={item}>
-                  <span className="grid h-7 w-7 place-items-center border-2 border-black bg-[#96d35f]">
-                    <Check className="h-4 w-4" />
-                  </span>
-                  <span className="text-[14px] font-black uppercase">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="absolute bottom-8 left-8 z-20 border-[4px] border-black bg-[#5dd6e4] px-5 py-4 text-black shadow-[7px_7px_0_#000]">
-            <p className="text-[14px] font-black uppercase">3x more callbacks tracked</p>
-          </div>
-          <div className="absolute bottom-8 right-8 z-20 border-[4px] border-black bg-[#f9d44a] px-5 py-4 text-black shadow-[7px_7px_0_#000]">
-            <p className="text-[14px] font-black uppercase">No spreadsheet drift</p>
           </div>
         </div>
       </section>
@@ -369,11 +264,11 @@ const AuthButton = ({
   loadingLabel: string;
 }) => (
   <button
-    className="mt-1 inline-flex h-[54px] items-center justify-center gap-3 border-[3px] border-black bg-black px-7 py-3 text-[15px] font-black uppercase text-white shadow-[6px_6px_0_#f97316] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 xl:h-[58px]"
+    className="mt-1 inline-flex h-[62px] items-center justify-center gap-3 border-[3px] border-black bg-black px-8 py-3 text-[16px] font-black uppercase text-white shadow-[6px_6px_0_#f97316] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
     type="submit"
     disabled={loading}
   >
     {loading ? loadingLabel : label}
-    {!loading ? <ArrowRight className="h-4 w-4" aria-hidden="true" /> : null}
+    {!loading ? <ArrowRight className="h-5 w-5" aria-hidden="true" /> : null}
   </button>
 );
