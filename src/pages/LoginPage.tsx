@@ -39,12 +39,12 @@ const AuthField = ({ label, type, placeholder, autoComplete, error, registration
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[12px] font-black uppercase text-black" htmlFor={inputId}>
+      <label className="text-[13px] font-black uppercase text-black" htmlFor={inputId}>
         {label}
       </label>
       <input
         id={inputId}
-        className={`h-11 w-full border-[3px] bg-[#fffaf1] px-4 text-sm font-black text-black outline-none transition placeholder:text-[#9a9489] focus:bg-white focus:shadow-[4px_4px_0_#000] ${
+        className={`h-12 w-full border-[3px] bg-[#fffaf1] px-4 text-[15px] font-black text-black outline-none transition placeholder:text-[#9a9489] focus:bg-white focus:shadow-[4px_4px_0_#000] xl:h-[54px] ${
           error ? 'border-[#ef4444]' : 'border-black'
         }`}
         type={type}
@@ -149,7 +149,7 @@ export const LoginPage = () => {
   const isRegister = mode === 'register';
 
   const AuthDivider = () => (
-    <div className="flex items-center gap-3 text-center text-[11px] font-black uppercase text-[#6f685f]">
+    <div className="flex items-center gap-3 text-center text-[12px] font-black uppercase text-[#6f685f]">
       <span className="h-[3px] flex-1 bg-black" />
       or
       <span className="h-[3px] flex-1 bg-black" />
@@ -165,14 +165,14 @@ export const LoginPage = () => {
         size="large"
         text="signin_with"
         theme="outline"
-        width="360"
+        width="430"
       />
     </div>
   );
 
   return (
     <main className="landed-brutal brutal-grid min-h-dvh bg-[#fbf7ef] p-2 font-sans text-black sm:p-3">
-      <section className="grid min-h-[calc(100dvh-16px)] overflow-hidden border-[4px] border-black bg-[#fffaf1] shadow-[8px_8px_0_#000] sm:min-h-[calc(100dvh-24px)] lg:grid-cols-[0.95fr_1.05fr]">
+      <section className="grid min-h-[calc(100dvh-16px)] overflow-hidden border-[4px] border-black bg-[#fffaf1] shadow-[8px_8px_0_#000] sm:min-h-[calc(100dvh-24px)] lg:grid-cols-[1.05fr_0.95fr]">
         <div className="flex min-h-0 flex-col">
           <div className="flex h-[64px] shrink-0 items-center justify-between border-b-[4px] border-black px-5 sm:h-[68px] sm:px-8">
             <button
@@ -194,16 +194,16 @@ export const LoginPage = () => {
             </button>
           </div>
 
-          <div className="flex flex-1 flex-col justify-center px-5 py-5 sm:px-10 sm:py-6 lg:px-[12%]">
-            <div className="w-full max-w-[430px]">
-              <div className="mb-4 inline-flex items-center gap-2 border-2 border-[#f3d8b9] bg-[#fff6e8] px-4 py-2 text-[12px] font-black uppercase text-[#7a3515] shadow-[3px_3px_0_rgba(0,0,0,0.12)]">
-                <Sparkles className="h-4 w-4 text-[#f97316]" />
+          <div className="flex flex-1 flex-col justify-center px-5 py-6 sm:px-10 sm:py-7 lg:px-[12%] xl:px-[13%]">
+            <div className="w-full max-w-[520px]">
+              <div className="mb-5 inline-flex items-center gap-2 border-2 border-[#f3d8b9] bg-[#fff6e8] px-4 py-2 text-[13px] font-black uppercase text-[#7a3515] shadow-[3px_3px_0_rgba(0,0,0,0.12)]">
+                <Sparkles className="h-5 w-5 text-[#f97316]" />
                 {isRegister ? 'Start landing today' : 'Welcome back'}
               </div>
-              <h1 className="text-[clamp(36px,5.2vw,60px)] font-black uppercase leading-[0.95]">
+              <h1 className="text-[clamp(44px,4.7vw,76px)] font-black uppercase leading-[0.92]">
                 {isRegister ? 'Create your account.' : 'Sign in to Landed.'}
               </h1>
-              <p className="mt-4 text-[15px] font-bold leading-6 text-[#555]">
+              <p className="mt-5 max-w-[500px] text-[17px] font-bold leading-7 text-[#555]">
                 {isRegister
                   ? 'Build one workspace for resumes, job links, interview notes, analytics, and every next move.'
                   : 'Jump back into your pipeline with every application, resume version, and follow-up in sight.'}
@@ -217,7 +217,7 @@ export const LoginPage = () => {
 
               {isRegister ? (
                 <form
-                  className="mt-5 flex w-full flex-col gap-3 text-left"
+                  className="mt-7 flex w-full flex-col gap-4 text-left"
                   onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                   noValidate
                 >
@@ -255,7 +255,7 @@ export const LoginPage = () => {
                 </form>
               ) : (
                 <form
-                  className="mt-5 flex w-full flex-col gap-3 text-left"
+                  className="mt-7 flex w-full flex-col gap-4 text-left"
                   onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                   noValidate
                 >
@@ -285,7 +285,7 @@ export const LoginPage = () => {
                 </form>
               )}
 
-              <p className="mt-4 text-sm font-bold text-[#555]">
+              <p className="mt-5 text-[15px] font-bold text-[#555]">
                 {isRegister ? 'Already have an account?' : 'New here?'}{' '}
                 <button
                   type="button"
@@ -322,7 +322,7 @@ export const LoginPage = () => {
             ))}
           </nav>
 
-          <div className="relative z-10 mx-auto mt-10 w-[74%] rotate-[-2deg] border-[4px] border-black bg-[#fffaf1] p-6 text-black shadow-[10px_10px_0_#000] xl:mt-14">
+          <div className="relative z-10 mx-auto mt-12 w-[80%] max-w-[620px] rotate-[-2deg] border-[4px] border-black bg-[#fffaf1] p-7 text-black shadow-[10px_10px_0_#000] xl:mt-16">
             <div className="mb-5 flex items-center gap-2 border-b-[3px] border-black pb-4">
               <span className="h-3 w-3 border-2 border-black bg-[#ef4444]" />
               <span className="h-3 w-3 border-2 border-black bg-[#facc15]" />
@@ -331,8 +331,8 @@ export const LoginPage = () => {
                 app.landed.dev/dashboard
               </span>
             </div>
-            <h2 className="text-[42px] font-black uppercase leading-none">Pipeline clarity</h2>
-            <p className="mt-4 text-[15px] font-bold leading-7 text-[#555]">
+            <h2 className="text-[clamp(38px,3.2vw,54px)] font-black uppercase leading-none">Pipeline clarity</h2>
+            <p className="mt-4 text-[16px] font-bold leading-7 text-[#555]">
               Applications, versions, stages, and follow-ups stay visible as the search gets busy.
             </p>
             <div className="mt-8 grid gap-3">
@@ -341,17 +341,17 @@ export const LoginPage = () => {
                   <span className="grid h-7 w-7 place-items-center border-2 border-black bg-[#96d35f]">
                     <Check className="h-4 w-4" />
                   </span>
-                  <span className="text-[13px] font-black uppercase">{item}</span>
+                  <span className="text-[14px] font-black uppercase">{item}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="absolute bottom-8 left-8 z-20 border-[4px] border-black bg-[#5dd6e4] px-5 py-4 text-black shadow-[7px_7px_0_#000]">
-            <p className="text-[13px] font-black uppercase">3x more callbacks tracked</p>
+            <p className="text-[14px] font-black uppercase">3x more callbacks tracked</p>
           </div>
           <div className="absolute bottom-8 right-8 z-20 border-[4px] border-black bg-[#f9d44a] px-5 py-4 text-black shadow-[7px_7px_0_#000]">
-            <p className="text-[13px] font-black uppercase">No spreadsheet drift</p>
+            <p className="text-[14px] font-black uppercase">No spreadsheet drift</p>
           </div>
         </div>
       </section>
@@ -369,7 +369,7 @@ const AuthButton = ({
   loadingLabel: string;
 }) => (
   <button
-    className="mt-1 inline-flex h-[48px] items-center justify-center gap-3 border-[3px] border-black bg-black px-7 py-3 text-sm font-black uppercase text-white shadow-[6px_6px_0_#f97316] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+    className="mt-1 inline-flex h-[54px] items-center justify-center gap-3 border-[3px] border-black bg-black px-7 py-3 text-[15px] font-black uppercase text-white shadow-[6px_6px_0_#f97316] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 xl:h-[58px]"
     type="submit"
     disabled={loading}
   >
