@@ -10,6 +10,7 @@ import com.landed.security.JwtService;
 import com.landed.user.User;
 import com.landed.user.UserRepository;
 import com.landed.user.dto.UserProfileResponse;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -113,6 +114,14 @@ public class AuthService {
     }
 
     private GoogleTokenInfo verifyGoogleCredential(String credential) {
+        if (credential.chars().filter(character -> character == '.').count() == 2) {
+            return verifyGoogleIdToken(credential);
+        }
+
+        return verifyGoogleAccessToken(credential);
+    }
+
+    private GoogleTokenInfo verifyGoogleIdToken(String credential) {
         try {
             var uri = UriComponentsBuilder.fromUriString("https://oauth2.googleapis.com/tokeninfo")
                     .queryParam("id_token", credential)
@@ -133,8 +142,51 @@ public class AuthService {
         }
     }
 
+    private GoogleTokenInfo verifyGoogleAccessToken(String credential) {
+        try {
+            var tokenInfoUri = UriComponentsBuilder.fromUriString("https://oauth2.googleapis.com/tokeninfo")
+                    .queryParam("access_token", credential)
+                    .build()
+                    .toUri();
+            GoogleAccessTokenInfo tokenInfo = restClient.get()
+                    .uri(tokenInfoUri)
+                    .retrieve()
+                    .body(GoogleAccessTokenInfo.class);
+
+            GoogleUserInfo userInfo = restClient.get()
+                    .uri("https://openidconnect.googleapis.com/v1/userinfo")
+                    .header("Authorization", "Bearer " + credential)
+                    .retrieve()
+                    .body(GoogleUserInfo.class);
+
+            if (tokenInfo == null || userInfo == null || userInfo.email() == null || userInfo.email().isBlank()) {
+                throw new BadRequestException("Google did not return an email address");
+            }
+
+            Boolean emailVerified = userInfo.emailVerified() != null
+                    ? userInfo.emailVerified()
+                    : tokenInfo.emailVerified();
+            return new GoogleTokenInfo(tokenInfo.audience(), userInfo.email(), emailVerified, userInfo.name());
+        } catch (RestClientException exception) {
+            throw new BadRequestException("Google sign-in credential could not be verified", exception);
+        }
+    }
+
     private record GoogleTokenInfo(
             @JsonProperty("aud") String audience,
+            String email,
+            @JsonProperty("email_verified") Boolean emailVerified,
+            String name
+    ) {
+    }
+
+    private record GoogleAccessTokenInfo(
+            @JsonProperty("audience") @JsonAlias({"aud", "issued_to"}) String audience,
+            @JsonProperty("verified_email") @JsonAlias("email_verified") Boolean emailVerified
+    ) {
+    }
+
+    private record GoogleUserInfo(
             String email,
             @JsonProperty("email_verified") Boolean emailVerified,
             String name
