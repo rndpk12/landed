@@ -25,7 +25,7 @@ apiClient.interceptors.request.use((config) => {
     throw new Error('Backend API URL is not configured. Set VITE_API_BASE_URL in Vercel to your live backend URL.');
   }
 
-  const token = localStorage.getItem(TOKEN_KEY);
+  const token = sessionStorage.getItem(TOKEN_KEY);
   if (token) {
     config.headers.Authorization = 'Bearer ' + token;
   }
@@ -37,6 +37,8 @@ apiClient.interceptors.response.use(
   (error: AxiosError<ApiErrorBody>) => {
     const status = error.response?.status;
     if (status === 401) {
+      sessionStorage.removeItem(TOKEN_KEY);
+      sessionStorage.removeItem('landed.user');
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem('landed.user');
     }

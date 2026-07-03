@@ -28,7 +28,7 @@ const shouldUseLocalAuthFallback = (error: unknown) =>
     error.message === BACKEND_UNAVAILABLE_MESSAGE);
 
 const createMockAuthResponse = (user: User): AuthResponse => {
-  localStorage.setItem(MOCK_USER_KEY, JSON.stringify(user));
+  sessionStorage.setItem(MOCK_USER_KEY, JSON.stringify(user));
 
   return {
     token: 'landed.mock.' + user.id,
@@ -99,7 +99,7 @@ const toPublicMockUser = (user: StoredMockUser): User => ({
 });
 
 const getStoredMockUser = (): User | null => {
-  const stored = localStorage.getItem(MOCK_USER_KEY);
+  const stored = sessionStorage.getItem(MOCK_USER_KEY);
 
   if (!stored) {
     return null;
@@ -108,7 +108,7 @@ const getStoredMockUser = (): User | null => {
   try {
     return JSON.parse(stored) as User;
   } catch {
-    localStorage.removeItem(MOCK_USER_KEY);
+    sessionStorage.removeItem(MOCK_USER_KEY);
     return null;
   }
 };
@@ -168,7 +168,7 @@ export const authApi = {
   },
   isGoogleSignInConfigured,
   async getCurrentUser(): Promise<User> {
-    const token = localStorage.getItem(TOKEN_KEY);
+    const token = sessionStorage.getItem(TOKEN_KEY);
     const mockUser = token?.startsWith('landed.mock.') ? getStoredMockUser() : null;
 
     if (mockUser) {
@@ -179,9 +179,12 @@ export const authApi = {
     return response.data;
   },
   saveToken(token: string) {
-    localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.setItem(TOKEN_KEY, token);
+    localStorage.removeItem(TOKEN_KEY);
   },
   clearToken() {
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(MOCK_USER_KEY);
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(MOCK_USER_KEY);
   }

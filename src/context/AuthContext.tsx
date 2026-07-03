@@ -5,7 +5,7 @@ import { TOKEN_KEY } from '../lib/apiClient';
 import type { LoginCredentials, RegisterPayload } from '../types/auth';
 import type { User } from '../types/user';
 
-const hasStoredToken = () => Boolean(localStorage.getItem(TOKEN_KEY));
+const hasStoredToken = () => Boolean(sessionStorage.getItem(TOKEN_KEY));
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -47,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(() => {
     authApi.clearToken();
     localStorage.removeItem('landed.user');
+    sessionStorage.removeItem('landed.user');
     setUser(null);
   }, []);
 
@@ -59,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       authApi.clearToken();
       localStorage.removeItem('landed.user');
+      sessionStorage.removeItem('landed.user');
       setUser(null);
       return null;
     } finally {
@@ -69,7 +71,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = useCallback(() => Boolean(hasStoredToken() && user), [user]);
 
   useEffect(() => {
+    localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem('landed.user');
+    sessionStorage.removeItem('landed.user');
 
     if (hasStoredToken()) {
       void getCurrentUser();
