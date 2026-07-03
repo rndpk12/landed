@@ -72,8 +72,8 @@ const currentWeekDays = () => {
   });
 };
 
-const panelClass = 'border-[4px] border-black bg-white shadow-[7px_7px_0_#000]';
-const iconBox = 'grid h-10 w-10 place-items-center border-[3px] border-black bg-[#f97316] text-white shadow-[3px_3px_0_#000]';
+const panelClass = 'border-[3px] border-black bg-white shadow-[5px_5px_0_#000]';
+const iconBox = 'grid h-9 w-9 place-items-center border-[3px] border-black bg-[#f97316] text-white shadow-[3px_3px_0_#000]';
 
 export const DashboardPage = () => {
   const { user } = useAuth();
@@ -118,23 +118,23 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-5 px-4 py-5 sm:px-5 lg:px-6">
+    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-3 py-4 sm:px-4 lg:px-5">
       <section className={`${panelClass} overflow-hidden bg-[#fffaf1]`}>
         <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="p-6 md:p-8">
-            <div className="mb-5 inline-flex items-center gap-2 border-2 border-[#f3d8b9] bg-[#fff6e8] px-4 py-2 text-[12px] font-black uppercase text-[#7a3515] shadow-[3px_3px_0_rgba(0,0,0,0.12)]">
+          <div className="p-5 md:p-6">
+            <div className="mb-4 inline-flex items-center gap-2 border-2 border-[#f3d8b9] bg-[#fff6e8] px-3 py-1.5 text-[11px] font-black uppercase text-[#7a3515] shadow-[2px_2px_0_rgba(0,0,0,0.12)]">
               <Sparkles className="h-4 w-4 text-[#f97316]" />
               {formatToday()}
             </div>
-            <h2 className="max-w-[760px] text-[clamp(2.5rem,5.2vw,5rem)] font-black uppercase leading-[0.92] text-black">
+            <h2 className="max-w-[660px] text-[clamp(2.2rem,4.2vw,4rem)] font-black uppercase leading-[0.92] text-black">
               Good evening, {firstName(user?.name)}.
             </h2>
-            <p className="mt-5 max-w-[560px] text-[16px] font-bold leading-7 text-[#555]">
+            <p className="mt-4 max-w-[520px] text-[14px] font-bold leading-6 text-[#555]">
               Your job search command center: applications, resume versions, interviews, and follow-ups in one loud workspace.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-wrap gap-2.5">
               <button
-                className="inline-flex items-center gap-2 border-[3px] border-black bg-white px-4 py-3 text-sm font-black uppercase text-black shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]"
+                className="inline-flex items-center gap-2 border-[3px] border-black bg-white px-3 py-2.5 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]"
                 type="button"
                 onClick={shareDashboard}
               >
@@ -142,7 +142,7 @@ export const DashboardPage = () => {
                 {shareLabel}
               </button>
               <Link
-                className="inline-flex items-center gap-2 border-[3px] border-black bg-[#f97316] px-4 py-3 text-sm font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 border-[3px] border-black bg-[#f97316] px-3 py-2.5 text-xs font-black uppercase text-white shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5"
                 to="/applications"
               >
                 <Plus className="h-4 w-4" />
@@ -151,7 +151,7 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="grid border-t-[4px] border-black bg-[#09090b] p-5 text-white sm:grid-cols-3 lg:grid-cols-1 lg:border-l-[4px] lg:border-t-0">
+          <div className="grid border-t-[3px] border-black bg-[#09090b] p-4 text-white sm:grid-cols-3 lg:grid-cols-1 lg:border-l-[3px] lg:border-t-0">
             <HeroMetric icon={TimerReset} label="active applications" value={activeApplications} color="bg-[#f97316]" />
             <HeroMetric icon={CheckCircle2} label="interviews" value={interviews} color="bg-[#96d35f]" />
             <HeroMetric icon={FileText} label="resumes" value={resumes.length} color="bg-[#5dd6e4]" />
@@ -160,18 +160,18 @@ export const DashboardPage = () => {
       </section>
 
       <section className={`${panelClass} overflow-hidden`}>
-        <div className="flex flex-col gap-3 border-b-[4px] border-black bg-[#f8efe2] px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-2.5 border-b-[3px] border-black bg-[#f8efe2] px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-3">
             <span className={iconBox}>
               <ListTodo className="h-5 w-5" />
             </span>
-            <h3 className="text-xl font-black uppercase tracking-tight text-black">Application Pipeline</h3>
-            <span className="border-2 border-black bg-white px-3 py-1 text-xs font-black uppercase text-[#555]">
+            <h3 className="text-lg font-black uppercase tracking-tight text-black">Application Pipeline</h3>
+            <span className="border-2 border-black bg-white px-2.5 py-1 text-[11px] font-black uppercase text-[#555]">
               This week
             </span>
           </div>
           <Link
-            className="border-[3px] border-black bg-white px-5 py-2 text-sm font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]"
+            className="border-[3px] border-black bg-white px-4 py-1.5 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]"
             to="/applications"
           >
             See all
@@ -181,20 +181,20 @@ export const DashboardPage = () => {
         <div className="overflow-x-auto bg-white">
           <table className="min-w-full border-separate border-spacing-0">
             <thead>
-              <tr className="bg-white text-left text-sm font-black uppercase text-black">
-                <th className="border-b-[3px] border-black px-4 py-4">
+              <tr className="bg-white text-left text-xs font-black uppercase text-black">
+                <th className="border-b-[3px] border-black px-3 py-3">
                   <span className="inline-flex items-center gap-2">
                     <BriefcaseBusiness className="h-4 w-4" />
                     Role
                   </span>
                 </th>
-                <th className="border-b-[3px] border-l-[3px] border-black px-4 py-4">
+                <th className="border-b-[3px] border-l-[3px] border-black px-3 py-3">
                   <span className="inline-flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     Company
                   </span>
                 </th>
-                <th className="border-b-[3px] border-l-[3px] border-black px-4 py-4">
+                <th className="border-b-[3px] border-l-[3px] border-black px-3 py-3">
                   <span className="inline-flex items-center gap-2">
                     <Sparkles className="h-4 w-4" />
                     Status
@@ -205,8 +205,8 @@ export const DashboardPage = () => {
             <tbody>
               {displayApplications.length ? (
                 displayApplications.map((application, index) => (
-                  <tr key={application.id} className="text-sm text-[#555]">
-                    <td className="border-b-[3px] border-black px-4 py-4">
+                  <tr key={application.id} className="text-[13px] text-[#555]">
+                    <td className="border-b-[3px] border-black px-3 py-3">
                       <div className="flex items-center justify-between gap-4">
                         <div className="min-w-0">
                           <p className="truncate font-black text-black">{application.role}</p>
@@ -226,9 +226,9 @@ export const DashboardPage = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="border-b-[3px] border-l-[3px] border-black px-4 py-4">
+                    <td className="border-b-[3px] border-l-[3px] border-black px-3 py-3">
                       <div className="flex items-center gap-3">
-                        <span className="flex h-9 w-9 items-center justify-center border-[3px] border-black bg-black text-xs font-black text-white shadow-[3px_3px_0_#f97316]">
+                        <span className="flex h-8 w-8 items-center justify-center border-[3px] border-black bg-black text-[11px] font-black text-white shadow-[2px_2px_0_#f97316]">
                           {application.company.slice(0, 1)}
                         </span>
                         <div>
@@ -237,8 +237,8 @@ export const DashboardPage = () => {
                         </div>
                       </div>
                     </td>
-                    <td className="border-b-[3px] border-l-[3px] border-black px-4 py-4">
-                      <span className={`inline-flex border-2 border-black px-3 py-1 text-xs font-black uppercase ${statusStyles[application.status]}`}>
+                    <td className="border-b-[3px] border-l-[3px] border-black px-3 py-3">
+                      <span className={`inline-flex border-2 border-black px-2.5 py-1 text-[11px] font-black uppercase ${statusStyles[application.status]}`}>
                         {application.status}
                       </span>
                     </td>
@@ -246,7 +246,7 @@ export const DashboardPage = () => {
                 ))
               ) : (
                 <tr>
-                  <td className="px-4 py-10 text-center text-sm font-bold text-[#555]" colSpan={3}>
+                  <td className="px-4 py-8 text-center text-[13px] font-bold text-[#555]" colSpan={3}>
                     No applications yet. Add your first real application to start tracking your pipeline.
                   </td>
                 </tr>
@@ -256,35 +256,35 @@ export const DashboardPage = () => {
         </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-2">
+      <section className="grid gap-4 xl:grid-cols-2">
         <div className={`${panelClass} overflow-hidden`}>
-          <div className="flex items-center justify-between border-b-[4px] border-black bg-[#f8efe2] px-4 py-4">
+          <div className="flex items-center justify-between border-b-[3px] border-black bg-[#f8efe2] px-3 py-3">
             <div className="flex items-center gap-3">
               <span className={iconBox}>
                 <CalendarDays className="h-5 w-5" />
               </span>
-              <h3 className="text-xl font-black uppercase tracking-tight text-black">Schedule</h3>
+              <h3 className="text-lg font-black uppercase tracking-tight text-black">Schedule</h3>
             </div>
             <MoreHorizontal className="h-5 w-5 text-black" />
           </div>
-          <div className="grid grid-cols-7 gap-2 border-b-[4px] border-black bg-white px-4 py-3 text-center text-xs font-black uppercase text-black">
+          <div className="grid grid-cols-7 gap-1.5 border-b-[3px] border-black bg-white px-3 py-2.5 text-center text-[11px] font-black uppercase text-black">
             {weekDays.map((day) => (
               <span
                 key={day.key}
-                className={day.isToday ? 'border-2 border-black bg-[#f5b8d4] py-2 shadow-[2px_2px_0_#000]' : 'py-2'}
+                className={day.isToday ? 'border-2 border-black bg-[#f5b8d4] py-1.5 shadow-[2px_2px_0_#000]' : 'py-1.5'}
               >
                 {day.label} {day.day}
               </span>
             ))}
           </div>
-          <div className="divide-y-[3px] divide-black bg-white px-4 py-1">
+          <div className="divide-y-[3px] divide-black bg-white px-3 py-1">
             {scheduledApplications.length ? (
               scheduledApplications.map((application) => (
-                <div key={application.id} className="flex items-center gap-4 py-4">
-                  <span className="h-12 w-2 border-2 border-black bg-[#96d35f]" />
+                <div key={application.id} className="flex items-center gap-3 py-3">
+                  <span className="h-10 w-2 border-2 border-black bg-[#96d35f]" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-black text-black">{application.role}</p>
-                    <p className="mt-1 text-sm font-bold text-[#555]">
+                    <p className="text-[13px] font-black text-black">{application.role}</p>
+                    <p className="mt-1 text-xs font-bold text-[#555]">
                       {application.company} - {application.status} - {formatShortDate(application.appliedDate)}
                     </p>
                   </div>
@@ -292,7 +292,7 @@ export const DashboardPage = () => {
                 </div>
               ))
             ) : (
-              <div className="py-10 text-center text-sm font-bold text-[#555]">
+              <div className="py-8 text-center text-[13px] font-bold text-[#555]">
                 No interview or assessment items yet.
               </div>
             )}
@@ -300,32 +300,32 @@ export const DashboardPage = () => {
         </div>
 
         <div className={`${panelClass} overflow-hidden`}>
-          <div className="flex items-center justify-between border-b-[4px] border-black bg-[#f8efe2] px-4 py-4">
+          <div className="flex items-center justify-between border-b-[3px] border-black bg-[#f8efe2] px-3 py-3">
             <div className="flex items-center gap-3">
               <span className={iconBox}>
                 <BellRing className="h-5 w-5" />
               </span>
-              <h3 className="text-xl font-black uppercase tracking-tight text-black">Notes</h3>
+              <h3 className="text-lg font-black uppercase tracking-tight text-black">Notes</h3>
             </div>
-            <Link className="text-sm font-black uppercase text-[#555] hover:text-black" to="/interview-notes">
+            <Link className="text-xs font-black uppercase text-[#555] hover:text-black" to="/interview-notes">
               Open notes
             </Link>
           </div>
-          <div className="divide-y-[3px] divide-black bg-white px-4 py-1">
+          <div className="divide-y-[3px] divide-black bg-white px-3 py-1">
             {applicationNotes.length ? (
               applicationNotes.map((application) => (
-                <div key={application.id} className="flex gap-4 py-4">
+                <div key={application.id} className="flex gap-3 py-3">
                   <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center border-[3px] border-black bg-[#5dd6e4]">
                     <MessageSquareText className="h-4 w-4 text-black" />
                   </span>
                   <div>
-                    <p className="font-black text-black">{application.company} - {application.role}</p>
-                    <p className="mt-1 line-clamp-2 text-sm font-bold leading-5 text-[#555]">{application.notes}</p>
+                    <p className="text-[13px] font-black text-black">{application.company} - {application.role}</p>
+                    <p className="mt-1 line-clamp-2 text-xs font-bold leading-5 text-[#555]">{application.notes}</p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="py-10 text-center text-sm font-bold text-[#555]">
+              <div className="py-8 text-center text-[13px] font-bold text-[#555]">
                 Notes you add to applications will appear here.
               </div>
             )}
@@ -333,7 +333,7 @@ export const DashboardPage = () => {
         </div>
       </section>
 
-      <section className="grid gap-5 md:grid-cols-3">
+      <section className="grid gap-4 md:grid-cols-3">
         <MetricCard icon={Target} label="Offers or accepted roles" value={offers} color="bg-[#a78bfa]" />
         <MetricCard icon={Search} label="Recent activity" value={recentActivities.length} color="bg-[#5dd6e4]" />
         <MetricCard
@@ -358,12 +358,12 @@ const HeroMetric = ({
   label: string;
   value: number;
 }) => (
-  <div className="border-b-[3px] border-black p-5 last:border-b-0 sm:border-b-0 sm:border-r-[3px] sm:last:border-r-0 lg:border-b-[3px] lg:border-r-0 lg:last:border-b-0">
-    <div className={`mb-4 grid h-11 w-11 place-items-center border-[3px] border-black ${color} text-black shadow-[3px_3px_0_#000]`}>
-      <Icon className="h-5 w-5" />
+  <div className="border-b-[3px] border-black p-4 last:border-b-0 sm:border-b-0 sm:border-r-[3px] sm:last:border-r-0 lg:border-b-[3px] lg:border-r-0 lg:last:border-b-0">
+    <div className={`mb-3 grid h-9 w-9 place-items-center border-[3px] border-black ${color} text-black shadow-[3px_3px_0_#000]`}>
+      <Icon className="h-4 w-4" />
     </div>
-    <div className="text-[42px] font-black leading-none">{value}</div>
-    <div className="mt-2 text-[12px] font-black uppercase text-white/70">{label}</div>
+    <div className="text-[34px] font-black leading-none">{value}</div>
+    <div className="mt-2 text-[11px] font-black uppercase text-white/70">{label}</div>
   </div>
 );
 
@@ -378,11 +378,11 @@ const MetricCard = ({
   label: string;
   value: number | string;
 }) => (
-  <div className={`${panelClass} p-5`}>
-    <div className={`grid h-11 w-11 place-items-center border-[3px] border-black ${color} text-black shadow-[3px_3px_0_#000]`}>
-      <Icon className="h-5 w-5" />
+  <div className={`${panelClass} p-4`}>
+    <div className={`grid h-9 w-9 place-items-center border-[3px] border-black ${color} text-black shadow-[3px_3px_0_#000]`}>
+      <Icon className="h-4 w-4" />
     </div>
-    <p className="mt-4 text-4xl font-black text-black">{value}</p>
-    <p className="mt-1 text-sm font-black uppercase text-[#555]">{label}</p>
+    <p className="mt-3 text-3xl font-black text-black">{value}</p>
+    <p className="mt-1 text-xs font-black uppercase text-[#555]">{label}</p>
   </div>
 );
