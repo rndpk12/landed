@@ -9,8 +9,8 @@ export const DashboardLayout = () => {
   const title = usePageTitle();
 
   return (
-    <div className="landed-brutal brutal-grid min-h-screen overflow-hidden bg-[#fbf7ef]">
-      <div className="dashboard-scale-shell min-h-screen lg:flex">
+    <div className="landed-brutal brutal-grid min-h-dvh bg-[#fbf7ef]">
+      <div className="min-h-dvh lg:flex">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <div className="min-w-0 flex-1 lg:pl-0">
           <Navbar title={title} onMenuClick={() => setSidebarOpen(true)} />

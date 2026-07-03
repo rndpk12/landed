@@ -29,13 +29,10 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (min-width: 1024px) {
-  .dashboard-scale-shell {
-    width: 111.111%;
-    min-height: 111.111vh;
-    transform: scale(0.9);
-    transform-origin: top left;
-  }
+html,
+body,
+#root {
+  min-height: 100%;
 }
 
 button,

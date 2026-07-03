@@ -130,27 +130,27 @@ export const ResumeVaultPage = () => {
         <EmptyState icon={FileText} title="No resumes yet" description="Upload your first resume to start building a clean version history." />
       ) : null}
       {modalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/30 px-4 py-8 backdrop-blur-sm">
-          <form className="w-full max-w-xl rounded-3xl bg-white p-6 shadow-xl" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-5 flex items-center justify-between">
-              <div><h3 className="text-xl font-bold text-slate-950">Upload Resume</h3><p className="text-sm text-slate-500">PDF only. Add naming context for tracking.</p></div>
-              <button className="btn-secondary" type="button" onClick={() => setModalOpen(false)}>Close</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4 py-8 backdrop-blur-sm">
+          <form className="max-h-[88dvh] w-full max-w-xl overflow-y-auto border-[4px] border-black bg-[#fffaf1] p-5 text-black shadow-[8px_8px_0_#000] sm:p-6" onSubmit={handleSubmit(onSubmit)}>
+            <div className="mb-5 flex items-center justify-between gap-4 border-b-[3px] border-black pb-4">
+              <div><h3 className="text-xl font-black uppercase text-black">Upload Resume</h3><p className="text-sm font-bold text-[#555]">PDF only. Add naming context for tracking.</p></div>
+              <button className="border-[3px] border-black bg-white px-4 py-2 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]" type="button" onClick={() => setModalOpen(false)}>Close</button>
             </div>
             <div className="space-y-4">
-              <div><label className="text-sm font-semibold text-slate-700">Resume Name</label><input className="input mt-2" {...register('name')} />{errors.name ? <p className="mt-1 text-xs text-rose-600">{errors.name.message}</p> : null}</div>
+              <div><label className="text-xs font-black uppercase text-black">Resume Name</label><input className="mt-2 h-11 w-full border-[3px] border-black bg-white px-3 text-sm font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('name')} />{errors.name ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.name.message}</p> : null}</div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <div><label className="text-sm font-semibold text-slate-700">Version</label><input className="input mt-2" placeholder="v5" {...register('version')} />{errors.version ? <p className="mt-1 text-xs text-rose-600">{errors.version.message}</p> : null}</div>
-                <div><label className="text-sm font-semibold text-slate-700">Role Tag</label><input className="input mt-2" placeholder="Backend" {...register('roleTag')} />{errors.roleTag ? <p className="mt-1 text-xs text-rose-600">{errors.roleTag.message}</p> : null}</div>
+                <div><label className="text-xs font-black uppercase text-black">Version</label><input className="mt-2 h-11 w-full border-[3px] border-black bg-white px-3 text-sm font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" placeholder="v5" {...register('version')} />{errors.version ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.version.message}</p> : null}</div>
+                <div><label className="text-xs font-black uppercase text-black">Role Tag</label><input className="mt-2 h-11 w-full border-[3px] border-black bg-white px-3 text-sm font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" placeholder="Backend" {...register('roleTag')} />{errors.roleTag ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.roleTag.message}</p> : null}</div>
               </div>
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center hover:bg-slate-100">
-                <Upload className="mb-3 h-6 w-6 text-slate-500" />
-                <span className="text-sm font-semibold text-slate-700">Choose PDF file</span>
+              <label className="flex cursor-pointer flex-col items-center justify-center border-[3px] border-dashed border-black bg-white p-8 text-center shadow-[4px_4px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:bg-[#fff6e8]">
+                <Upload className="mb-3 h-6 w-6 text-[#f97316]" />
+                <span className="text-sm font-black uppercase text-black">Choose PDF file</span>
                 <input className="sr-only" type="file" accept="application/pdf" {...register('file')} />
               </label>
-              {errors.file ? <p className="text-xs text-rose-600">{errors.file.message}</p> : null}
+              {errors.file ? <p className="text-xs font-bold text-rose-600">{errors.file.message}</p> : null}
             </div>
-            {uploadMutation.error ? <p className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{uploadMutation.error.message}</p> : null}
-            <div className="mt-6 flex justify-end gap-3"><button className="btn-secondary" type="button" onClick={() => setModalOpen(false)}>Cancel</button><button className="btn-primary" type="submit" disabled={uploadMutation.isPending}>{uploadMutation.isPending ? 'Uploading...' : 'Upload'}</button></div>
+            {uploadMutation.error ? <p className="mt-4 border-[3px] border-[#dc2626] bg-[#fee2e2] px-4 py-3 text-sm font-black text-[#991b1b]">{uploadMutation.error.message}</p> : null}
+            <div className="mt-6 flex justify-end gap-3"><button className="border-[3px] border-black bg-white px-4 py-2 text-sm font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]" type="button" onClick={() => setModalOpen(false)}>Cancel</button><button className="border-[3px] border-black bg-[#f97316] px-4 py-2 text-sm font-black uppercase text-white shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={uploadMutation.isPending}>{uploadMutation.isPending ? 'Uploading...' : 'Upload'}</button></div>
           </form>
         </div>
       ) : null}

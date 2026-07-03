@@ -224,31 +224,34 @@ export const ApplicationsPage = () => {
         <EmptyState icon={Search} title="No applications found" description="Try a different search or add a new application to the pipeline." />
       )}
       {modalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/30 px-4 py-4 backdrop-blur-sm">
-          <form className="max-h-[88vh] w-full max-w-[560px] overflow-y-auto rounded-2xl bg-white p-3.5 shadow-xl" onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-2.5 flex items-start justify-between gap-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4 py-4 backdrop-blur-sm">
+          <form
+            className="max-h-[88dvh] w-full max-w-[600px] overflow-y-auto border-[4px] border-black bg-[#fffaf1] p-4 text-black shadow-[8px_8px_0_#000] sm:p-5"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="mb-4 flex items-start justify-between gap-4 border-b-[3px] border-black pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-950">{editingApplication ? 'Edit Application' : 'Add Application'}</h3>
-                <p className="text-[11px] text-slate-500">Capture the basics and keep moving.</p>
+                <h3 className="text-xl font-black uppercase text-black">{editingApplication ? 'Edit Application' : 'Add Application'}</h3>
+                <p className="text-xs font-bold text-[#555]">Capture the basics and keep moving.</p>
               </div>
-              <button className="btn-secondary px-2.5 py-1.5 text-xs" type="button" onClick={closeModal}>Close</button>
+              <button className="border-[3px] border-black bg-white px-3 py-2 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]" type="button" onClick={closeModal}>Close</button>
             </div>
-            {mutationError ? <p className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">{mutationError.message}</p> : null}
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              <div><label className="text-[11px] font-semibold text-slate-700">Company</label><input className="input mt-1 h-8 py-1.5 text-xs" {...register('company')} />{errors.company ? <p className="mt-1 text-xs text-rose-600">{errors.company.message}</p> : null}</div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Role</label><input className="input mt-1 h-8 py-1.5 text-xs" {...register('role')} />{errors.role ? <p className="mt-1 text-xs text-rose-600">{errors.role.message}</p> : null}</div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Job URL</label><input className="input mt-1 h-8 py-1.5 text-xs" {...register('jobUrl')} />{errors.jobUrl ? <p className="mt-1 text-xs text-rose-600">{errors.jobUrl.message}</p> : null}</div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Location</label><input className="input mt-1 h-8 py-1.5 text-xs" {...register('location')} /></div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Employment Type</label><input className="input mt-1 h-8 py-1.5 text-xs" {...register('employmentType')} /></div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Status</label><select className="input mt-1 h-8 py-1.5 text-xs" {...register('status')}>{statuses.filter((item) => item !== 'All').map((item) => <option key={item}>{item}</option>)}</select></div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Applied Date</label><input className="input mt-1 h-8 py-1.5 text-xs" type="date" {...register('appliedDate')} />{errors.appliedDate ? <p className="mt-1 text-xs text-rose-600">{errors.appliedDate.message}</p> : null}</div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Skills</label><input className="input mt-1 h-8 py-1.5 text-xs" placeholder="React, TypeScript, SQL" {...register('skills')} /></div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Description</label><textarea className="input mt-1 min-h-20 py-1.5 text-xs" {...register('jobDescription')} /></div>
-              <div><label className="text-[11px] font-semibold text-slate-700">Notes</label><textarea className="input mt-1 min-h-20 py-1.5 text-xs" {...register('notes')} /></div>
+            {mutationError ? <p className="mb-3 border-[3px] border-[#dc2626] bg-[#fee2e2] px-3 py-2 text-xs font-black text-[#991b1b]">{mutationError.message}</p> : null}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div><label className="text-[11px] font-black uppercase text-black">Company</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('company')} />{errors.company ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.company.message}</p> : null}</div>
+              <div><label className="text-[11px] font-black uppercase text-black">Role</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('role')} />{errors.role ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.role.message}</p> : null}</div>
+              <div><label className="text-[11px] font-black uppercase text-black">Job URL</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('jobUrl')} />{errors.jobUrl ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.jobUrl.message}</p> : null}</div>
+              <div><label className="text-[11px] font-black uppercase text-black">Location</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('location')} /></div>
+              <div><label className="text-[11px] font-black uppercase text-black">Employment Type</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" {...register('employmentType')} /></div>
+              <div><label className="text-[11px] font-black uppercase text-black">Status</label><select className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none focus:shadow-[3px_3px_0_#000]" {...register('status')}>{statuses.filter((item) => item !== 'All').map((item) => <option key={item}>{item}</option>)}</select></div>
+              <div><label className="text-[11px] font-black uppercase text-black">Applied Date</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none focus:shadow-[3px_3px_0_#000]" type="date" {...register('appliedDate')} />{errors.appliedDate ? <p className="mt-1 text-xs font-bold text-rose-600">{errors.appliedDate.message}</p> : null}</div>
+              <div><label className="text-[11px] font-black uppercase text-black">Skills</label><input className="mt-1 h-10 w-full border-[3px] border-black bg-white px-3 py-1.5 text-xs font-bold text-black outline-none placeholder:text-[#9a9489] focus:shadow-[3px_3px_0_#000]" placeholder="React, TypeScript, SQL" {...register('skills')} /></div>
+              <div><label className="text-[11px] font-black uppercase text-black">Description</label><textarea className="mt-1 min-h-20 w-full border-[3px] border-black bg-white px-3 py-2 text-xs font-bold text-black outline-none focus:shadow-[3px_3px_0_#000]" {...register('jobDescription')} /></div>
+              <div><label className="text-[11px] font-black uppercase text-black">Notes</label><textarea className="mt-1 min-h-20 w-full border-[3px] border-black bg-white px-3 py-2 text-xs font-bold text-black outline-none focus:shadow-[3px_3px_0_#000]" {...register('notes')} /></div>
             </div>
             <div className="mt-3 flex justify-end gap-2.5">
-              <button className="btn-secondary px-2.5 py-1.5 text-xs" type="button" onClick={closeModal}>Cancel</button>
-              <button className="btn-primary px-2.5 py-1.5 text-xs" type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Application'}</button>
+              <button className="border-[3px] border-black bg-white px-4 py-2 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]" type="button" onClick={closeModal}>Cancel</button>
+              <button className="border-[3px] border-black bg-[#f97316] px-4 py-2 text-xs font-black uppercase text-white shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Application'}</button>
             </div>
           </form>
         </div>
