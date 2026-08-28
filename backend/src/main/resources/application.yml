@@ -1,0 +1,98 @@
+spring:
+  application:
+    name: landed-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/landed}
+    username: ${DB_USERNAME:landed}
+    password: ${DB_PASSWORD:landed-local-password}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:10}
+      minimum-idle: 2
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:5000}
+      validation-timeout: 3000
+      max-lifetime: ${DB_CONNECTION_MAX_LIFETIME_MS:840000}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+      jakarta.persistence.query.timeout: ${DB_QUERY_TIMEOUT_MS:10000}
+  flyway:
+    enabled: true
+  jackson:
+    default-property-inclusion: non_null
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: ${MAX_RESUME_FILE_SIZE:10MB}
+      max-request-size: ${MAX_RESUME_FILE_SIZE:10MB}
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  tomcat:
+    threads:
+      max: ${HTTP_MAX_THREADS:100}
+      min-spare: ${HTTP_MIN_SPARE_THREADS:10}
+    accept-count: ${HTTP_ACCEPT_COUNT:100}
+    connection-timeout: ${HTTP_CONNECTION_TIMEOUT:5s}
+  error:
+    include-message: never
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION:86400000}
+  google:
+    client-id: ${GOOGLE_CLIENT_ID:}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  storage:
+    type: ${RESUME_STORAGE_TYPE:local}
+    resume-directory: ${RESUME_STORAGE_PATH:./data/resumes}
+    s3:
+      bucket: ${RESUME_STORAGE_BUCKET:}
+      region: ${RESUME_STORAGE_REGION:auto}
+      endpoint: ${RESUME_STORAGE_ENDPOINT:}
+      access-key: ${RESUME_STORAGE_ACCESS_KEY:}
+      secret-key: ${RESUME_STORAGE_SECRET_KEY:}
+      prefix: ${RESUME_STORAGE_PREFIX:resumes/}
+      path-style-access: ${RESUME_STORAGE_PATH_STYLE:false}
+  job-import:
+    allowed-hosts: ${JOB_IMPORT_ALLOWED_HOSTS:linkedin.com,naukri.com,greenhouse.io,boards.greenhouse.io,job-boards.greenhouse.io}
+    connect-timeout-seconds: 5
+    request-timeout-seconds: 10
+  rate-limit:
+    enabled: ${RATE_LIMIT_ENABLED:true}
+    auth-per-minute: ${RATE_LIMIT_AUTH_PER_MINUTE:10}
+    heavy-per-minute: ${RATE_LIMIT_HEAVY_PER_MINUTE:20}
+    general-per-minute: ${RATE_LIMIT_GENERAL_PER_MINUTE:180}
+  resume-processing:
+    core-pool-size: ${RESUME_PROCESSING_CORE_POOL_SIZE:2}
+    max-pool-size: ${RESUME_PROCESSING_MAX_POOL_SIZE:4}
+    queue-capacity: ${RESUME_PROCESSING_QUEUE_CAPACITY:50}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.security: INFO
