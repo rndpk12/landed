@@ -1,117 +1,366 @@
-# Landed API
+Absolutely. Here is the same professional README with **all emojis removed**:
 
-Spring Boot 3 / Java 21 backend for Landed, a multi-user job application tracker.
+````markdown
+# Landed
 
-## Included
+> A full-stack career management platform for organizing job applications, resumes, interview notes, and job-search analytics in one workspace.
 
-- Registration and login with BCrypt password hashing and signed JWT bearer tokens
-- Current-user profile endpoint
-- User-scoped application create, list, update, and delete operations
-- Jakarta validation and consistent JSON error responses
-- PostgreSQL persistence with Flyway migrations and Hibernate schema validation
-- OpenAPI 3 / Swagger UI, Actuator health checks, Docker, and Docker Compose
-- Stateless Spring Security, configurable CORS, and tenant ownership checks
+Landed is a production-oriented SaaS application designed to help candidates manage the complete job-search lifecycle. It provides a centralized workspace for tracking applications, managing resumes, importing job postings, recording interview notes, and analyzing application activity.
 
-## Run with Docker
+## Features
 
-Create the environment file and replace the generated values:
+- Authentication and Authorization
+  - Email/password registration and login
+  - BCrypt password hashing
+  - JWT-based authentication
+  - User-scoped data access
+
+- Application Tracking
+  - Create, view, update, and delete job applications
+  - Track application status and progress
+  - Application details and activity history
+
+- Resume Management
+  - Centralized resume storage
+  - Resume upload and management
+  - Resume performance insights
+
+- Resume Matching
+  - Compare resumes against job descriptions
+  - Identify relevant skills and matching information
+  - Support targeted resume optimization
+
+- Job Import
+  - Import job information from supported job sources
+  - Extract relevant job details for application tracking
+
+- Interview Management
+  - Record and organize interview notes
+  - Keep interview-related information alongside applications
+
+- Analytics
+  - Application activity insights
+  - Job-search performance metrics
+  - Visual analytics dashboard
+
+- Security and Reliability
+  - Spring Security
+  - JWT bearer authentication
+  - Tenant/user ownership checks
+  - Jakarta Bean Validation
+  - Consistent API error responses
+  - Configurable CORS
+
+## Architecture
+
+Landed follows a separated full-stack architecture:
+
+```text
+Landed
+├── frontend/        # React + TypeScript + Vite
+├── backend/         # Spring Boot REST API
+├── compose.yaml     # Docker Compose environment
+├── Dockerfile       # Backend container image
+└── README.md
+````
+
+### Frontend
+
+Built with:
+
+* React 19
+* TypeScript
+* Vite
+* React Router
+* TanStack Query
+* React Hook Form
+* Zod
+* Axios
+* Recharts
+* Tailwind CSS
+
+### Backend
+
+Built with:
+
+* Java 21
+* Spring Boot 3
+* Spring Security
+* Spring Data JPA
+* PostgreSQL
+* Flyway
+* JWT
+* OpenAPI / Swagger
+* AWS S3 SDK
+* Apache PDFBox
+* Apache POI
+* Jsoup
+
+### Infrastructure
+
+* Docker
+* Docker Compose
+* PostgreSQL
+* Vercel for frontend deployment
+
+## Authentication
+
+The backend uses stateless JWT-based authentication.
+
+```text
+User
+ │
+ ▼
+Frontend
+ │
+ │ Authentication request
+ ▼
+Spring Boot API
+ │
+ ├── Spring Security
+ ├── BCrypt password hashing
+ └── JWT token generation
+        │
+        ▼
+     Authenticated API requests
+```
+
+User-owned resources are protected using authentication and ownership checks.
+
+## Getting Started
+
+### Prerequisites
+
+Make sure the following are installed:
+
+* Java 21
+* Node.js
+* npm
+* Docker Desktop
+* Docker Compose
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/rndpk12/landed-backend.git
+cd landed-backend
+```
+
+### 2. Configure environment variables
+
+Create a local environment file:
 
 ```bash
 cp .env.example .env
-openssl rand -base64 64
-# Paste the generated secret into JWT_SECRET in .env
-docker compose up --build
 ```
 
-The API runs at `http://localhost:8080`. Swagger UI is available at
-`http://localhost:8080/swagger-ui.html` and health at `http://localhost:8080/actuator/health`.
+Update the generated values in `.env`, particularly the JWT secret and database configuration.
 
-## Run locally
+> Never commit `.env` or production secrets to the repository.
 
-Requirements: Java 21, Maven 3.9+, and PostgreSQL.
+### 3. Start the backend infrastructure
+
+From the project root:
 
 ```bash
-export DB_URL=jdbc:postgresql://localhost:5432/landed
-export DB_USERNAME=landed
-export DB_PASSWORD=your-password
-export JWT_SECRET="$(openssl rand -base64 64)"
-export GOOGLE_CLIENT_ID=your-google-oauth-web-client-id
-mvn spring-boot:run
+docker compose up -d --build
 ```
 
-`JWT_SECRET` is intentionally required. It must be Base64-encoded and decode to at least 32 bytes.
-Use the same Google OAuth web client ID for backend `GOOGLE_CLIENT_ID` and frontend
-`VITE_GOOGLE_CLIENT_ID` so Google sign-in can launch and the backend can verify the credential.
+Check the running services:
+
+```bash
+docker compose ps
+```
+
+The API should be available at:
+
+```text
+http://localhost:8080
+```
+
+Health check:
+
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "UP"
+}
+```
+
+### 4. Start the frontend
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:3000
+```
+
+### 5. Build the frontend
+
+```bash
+cd frontend
+npm run build
+```
+
+### 6. Run backend tests
+
+From the backend directory:
+
+```bash
+cd backend
+mvn test
+```
+
+## Docker
+
+The backend uses a multi-stage Docker build.
+
+```text
+Maven + JDK 21
+      │
+      ▼
+Compile and package
+      │
+      ▼
+Spring Boot JAR
+      │
+      ▼
+JRE 21 Alpine image
+      │
+      ▼
+Non-root application user
+```
+
+Start the complete local environment with:
+
+```bash
+docker compose up -d --build
+```
+
+Stop the environment with:
+
+```bash
+docker compose down
+```
 
 ## API
 
-All authenticated endpoints require `Authorization: Bearer <token>`.
+The backend exposes a REST API for:
 
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/v1/auth/register` | Create an account and return a token |
-| POST | `/api/v1/auth/login` | Authenticate and return a token |
-| GET | `/api/v1/users/me` | Get the current profile |
-| POST | `/api/v1/applications` | Create an application |
-| GET | `/api/v1/applications` | List the current user's applications |
-| PUT | `/api/v1/applications/{id}` | Fully update an owned application |
-| DELETE | `/api/v1/applications/{id}` | Delete an owned application |
+* Authentication
+* User profiles
+* Applications
+* Resumes
+* Resume matching
+* Resume performance
+* Job imports
+* Interview notes
+* Activities
 
-Example registration:
-
-```json
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "a-strong-password"
-}
-```
-
-Example application request:
-
-```json
-{
-  "company": "Acme",
-  "role": "Backend Engineer",
-  "jobUrl": "https://example.com/jobs/123",
-  "status": "APPLIED",
-  "notes": "Referred by Sam",
-  "appliedDate": "2026-06-22"
-}
-```
-
-Statuses: `SAVED`, `APPLIED`, `OA`, `INTERVIEW`, `OFFER`, `REJECTED`, `ACCEPTED`.
-
-## Configuration
-
-| Variable | Required | Default |
-|---|---:|---|
-| `JWT_SECRET` | yes | none |
-| `GOOGLE_CLIENT_ID` | for Google sign-in | none |
-| `JWT_EXPIRATION` | no | `86400000` ms |
-| `DB_URL` | no | `jdbc:postgresql://localhost:5432/landed` |
-| `DB_USERNAME` | no | `landed` |
-| `DB_PASSWORD` | no | `landed-local-password` |
-| `CORS_ALLOWED_ORIGINS` | no | `http://localhost:3000` |
-| `DB_POOL_SIZE` | no | `10` |
-
-Use separate, securely managed secrets in production. TLS should terminate at the ingress or load balancer.
-
-## Verify
-
-```bash
-mvn test
-mvn package
-```
-
-## Structure
+OpenAPI/Swagger documentation is available when the backend is running.
 
 ```text
-src/main/java/com/landed
-├── application/   # application domain, DTOs, repository, service, controller
-├── auth/          # registration/login workflow and DTOs
-├── common/        # shared error response and global exception handling
-├── config/        # Spring Security, CORS, and OpenAPI configuration
-├── security/      # JWT service/filter and authentication handlers
-└── user/          # user domain, profile DTO, repository, service, controller
+http://localhost:8080/swagger-ui/index.html
+```
+
+## Validation
+
+The project has been validated across the main application layers:
+
+* Frontend production build
+* Backend unit/service tests
+* Docker image build
+* PostgreSQL container
+* Spring Boot health endpoint
+* Authentication flow
+* Dashboard
+* Application management
+* Resume management
+* Resume matching
+* Analytics
+* Interview notes
+
+## Project Structure
+
+```text
+.
+├── backend/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   └── resources/
+│   │   └── test/
+│   └── pom.xml
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── layout/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── types/
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── compose.yaml
+├── Dockerfile
+├── .env.example
+└── README.md
+```
+
+## Security
+
+The repository is configured to exclude local and generated files such as:
+
+```text
+.env
+node_modules/
+dist/
+target/
+.vite/
+*.log
+*.tsbuildinfo
+```
+
+Production credentials and secrets should always be provided through environment variables or the deployment platform's secret-management system.
+
+## Project Status
+
+Landed is currently under active development.
+
+The core full-stack application is operational with separated React/TypeScript frontend and Spring Boot backend applications, containerized local infrastructure, PostgreSQL persistence, authentication, application tracking, resume workflows, interview notes, and analytics.
+
+## Author
+
+**R N Dhanapraveen Krishna**
+
+Software Engineering Student
+
+GitHub: `https://github.com/rndpk12`
+
+---
+
+### License
+
+This project is currently maintained as a personal software engineering project.
+
+```
+
+**One change I strongly recommend:** don't claim features or libraries in the README unless they actually exist in your current codebase. Before you commit this, we can verify the `frontend/package.json`, `backend/pom.xml`, and actual project structure and make the README **100% accurate to your implementation**.
 ```
