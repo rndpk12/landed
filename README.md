@@ -1,6 +1,4 @@
-Absolutely. Here is the same professional README with **all emojis removed**:
 
-````markdown
 # Landed
 
 > A full-stack career management platform for organizing job applications, resumes, interview notes, and job-search analytics in one workspace.
