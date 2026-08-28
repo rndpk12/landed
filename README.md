@@ -1,302 +1,122 @@
+# Landed
 
-# Landed 
+A full-stack career management platform for tracking job applications, managing resumes, preparing for interviews, and analyzing the job search.
 
-Website : https://getlanded.vercel.app
+## Overview
 
-> A full-stack career management platform for organizing job applications, resumes, interview notes, and job-search analytics in one workspace.
+Landed is a full-stack SaaS application that centralizes the job-search workflow into a single workspace.
 
-Landed is a production-oriented SaaS application designed to help candidates manage the complete job-search lifecycle. It provides a centralized workspace for tracking applications, managing resumes, importing job postings, recording interview notes, and analyzing application activity.
+It provides tools for managing job applications, resumes, job imports, interview notes, resume matching, and job-search analytics.
 
 ## Features
 
-- Authentication and Authorization
-  - Email/password registration and login
-  - BCrypt password hashing
-  - JWT-based authentication
-  - User-scoped data access
+### Authentication
 
-- Application Tracking
-  - Create, view, update, and delete job applications
-  - Track application status and progress
-  - Application details and activity history
+- Email/password registration and login
+- BCrypt password hashing
+- JWT-based authentication
+- Google OAuth support
+- User-scoped data access
 
-- Resume Management
-  - Centralized resume storage
-  - Resume upload and management
-  - Resume performance insights
+### Application Tracking
 
-- Resume Matching
-  - Compare resumes against job descriptions
-  - Identify relevant skills and matching information
-  - Support targeted resume optimization
+- Create, view, update, and delete job applications
+- Track application stages and statuses
+- Application notes and activity history
+- Stage transition tracking
 
-- Job Import
-  - Import job information from supported job sources
-  - Extract relevant job details for application tracking
+### Resume Management
 
-- Interview Management
-  - Record and organize interview notes
-  - Keep interview-related information alongside applications
+- Resume upload and management
+- Resume versioning
+- Resume text extraction
+- Resume performance analysis
+- Local and AWS S3 storage support
 
-- Analytics
-  - Application activity insights
-  - Job-search performance metrics
-  - Visual analytics dashboard
+### Resume Matching
 
-- Security and Reliability
-  - Spring Security
-  - JWT bearer authentication
-  - Tenant/user ownership checks
-  - Jakarta Bean Validation
-  - Consistent API error responses
-  - Configurable CORS
+- Compare resumes against job descriptions
+- Analyze resume-job relevance
+- Support targeted resume optimization
 
-## Architecture
+### Job Import
 
-Landed follows a separated full-stack architecture:
+- Import job postings from supported platforms
+- Detect job source
+- Extract structured job information
 
-```text
-Landed
-├── frontend/        # React + TypeScript + Vite
-├── backend/         # Spring Boot REST API
-├── compose.yaml     # Docker Compose environment
-├── Dockerfile       # Backend container image
-└── README.md
-````
+### Interview Management
+
+- Create and manage interview notes
+- Organize interview information by application
+
+### Analytics
+
+- Application activity tracking
+- Job-search performance metrics
+- Resume performance insights
+- Visual analytics dashboard
+
+## Tech Stack
 
 ### Frontend
 
-Built with:
-
-* React 19
-* TypeScript
-* Vite
-* React Router
-* TanStack Query
-* React Hook Form
-* Zod
-* Axios
-* Recharts
-* Tailwind CSS
+- React 19
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- Axios
+- React Hook Form
+- Zod
+- Recharts
+- Tailwind CSS
+- Lucide React
 
 ### Backend
 
-Built with:
-
-* Java 21
-* Spring Boot 3
-* Spring Security
-* Spring Data JPA
-* PostgreSQL
-* Flyway
-* JWT
-* OpenAPI / Swagger
-* AWS S3 SDK
-* Apache PDFBox
-* Apache POI
-* Jsoup
+- Java 21
+- Spring Boot 3.4
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- Flyway
+- JWT
+- OpenAPI / Swagger
+- AWS SDK for S3
+- Apache PDFBox
+- Apache POI
+- Jsoup
 
 ### Infrastructure
 
-* Docker
-* Docker Compose
-* PostgreSQL
-* Vercel for frontend deployment
+- Docker
+- Docker Compose
+- PostgreSQL
+- Vercel
 
-## Authentication
-
-The backend uses stateless JWT-based authentication.
+## Architecture
 
 ```text
-User
- │
- ▼
-Frontend
- │
- │ Authentication request
- ▼
-Spring Boot API
- │
- ├── Spring Security
- ├── BCrypt password hashing
- └── JWT token generation
-        │
-        ▼
-     Authenticated API requests
-```
-
-User-owned resources are protected using authentication and ownership checks.
-
-## Getting Started
-
-### Prerequisites
-
-Make sure the following are installed:
-
-* Java 21
-* Node.js
-* npm
-* Docker Desktop
-* Docker Compose
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/rndpk12/landed-backend.git
-cd landed-backend
-```
-
-### 2. Configure environment variables
-
-Create a local environment file:
-
-```bash
-cp .env.example .env
-```
-
-Update the generated values in `.env`, particularly the JWT secret and database configuration.
-
-> Never commit `.env` or production secrets to the repository.
-
-### 3. Start the backend infrastructure
-
-From the project root:
-
-```bash
-docker compose up -d --build
-```
-
-Check the running services:
-
-```bash
-docker compose ps
-```
-
-The API should be available at:
-
-```text
-http://localhost:8080
-```
-
-Health check:
-
-```bash
-curl http://localhost:8080/actuator/health
-```
-
-Expected response:
-
-```json
-{
-  "status": "UP"
-}
-```
-
-### 4. Start the frontend
-
-Open another terminal:
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-The frontend will be available at:
-
-```text
-http://localhost:3000
-```
-
-### 5. Build the frontend
-
-```bash
-cd frontend
-npm run build
-```
-
-### 6. Run backend tests
-
-From the backend directory:
-
-```bash
-cd backend
-mvn test
-```
-
-## Docker
-
-The backend uses a multi-stage Docker build.
-
-```text
-Maven + JDK 21
-      │
-      ▼
-Compile and package
-      │
-      ▼
-Spring Boot JAR
-      │
-      ▼
-JRE 21 Alpine image
-      │
-      ▼
-Non-root application user
-```
-
-Start the complete local environment with:
-
-```bash
-docker compose up -d --build
-```
-
-Stop the environment with:
-
-```bash
-docker compose down
-```
-
-## API
-
-The backend exposes a REST API for:
-
-* Authentication
-* User profiles
-* Applications
-* Resumes
-* Resume matching
-* Resume performance
-* Job imports
-* Interview notes
-* Activities
-
-OpenAPI/Swagger documentation is available when the backend is running.
-
-```text
-http://localhost:8080/swagger-ui/index.html
-```
-
-## Validation
-
-The project has been validated across the main application layers:
-
-* Frontend production build
-* Backend unit/service tests
-* Docker image build
-* PostgreSQL container
-* Spring Boot health endpoint
-* Authentication flow
-* Dashboard
-* Application management
-* Resume management
-* Resume matching
-* Analytics
-* Interview notes
+                         Landed
+                            |
+              +-------------+-------------+
+              |                           |
+          Frontend                     Backend
+       React + TypeScript          Spring Boot REST API
+              |                           |
+              +-------------+-------------+
+                            |
+                        PostgreSQL
+                            |
+                      Resume Storage
+                       Local / S3
+````
 
 ## Project Structure
 
 ```text
-.
+Landed/
 ├── backend/
 │   ├── src/
 │   │   ├── main/
@@ -311,6 +131,7 @@ The project has been validated across the main application layers:
 │   │   ├── context/
 │   │   ├── hooks/
 │   │   ├── layout/
+│   │   ├── lib/
 │   │   ├── pages/
 │   │   ├── routes/
 │   │   ├── services/
@@ -318,33 +139,181 @@ The project has been validated across the main application layers:
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── compose.yaml
+├── .github/
+├── .vscode/
 ├── Dockerfile
+├── compose.yaml
 ├── .env.example
+├── DEPLOYMENT.md
 └── README.md
+```
+
+## Getting Started
+
+### Prerequisites
+
+* Java 21
+* Maven 3.9+
+* Node.js
+* npm
+* Docker Desktop
+* Docker Compose
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/rndpk12/landed-backend.git
+cd landed-backend
+```
+
+### Configure Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Configure the required environment variables before starting the application.
+
+Never commit `.env` or production credentials to the repository.
+
+## Running with Docker
+
+From the project root:
+
+```bash
+docker compose up -d --build
+```
+
+Check the services:
+
+```bash
+docker compose ps
+```
+
+The backend API will be available at:
+
+```text
+http://localhost:8080
+```
+
+Health check:
+
+```bash
+curl http://localhost:8080/actuator/health
+```
+
+Swagger UI:
+
+```text
+http://localhost:8080/swagger-ui/index.html
+```
+
+Stop the services:
+
+```bash
+docker compose down
+```
+
+## Running the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at:
+
+```text
+http://localhost:3000
+```
+
+### Production Build
+
+```bash
+npm run build
+```
+
+### Lint
+
+```bash
+npm run lint
+```
+
+## Running Backend Tests
+
+```bash
+cd backend
+mvn test
+```
+
+Build the backend:
+
+```bash
+mvn clean package
+```
+
+## API
+
+The backend exposes REST APIs for:
+
+* Authentication
+* User profiles
+* Applications
+* Resumes
+* Resume matching
+* Resume performance
+* Job imports
+* Interview notes
+* Activities
+
+Authenticated requests use JWT bearer authentication:
+
+```http
+Authorization: Bearer <token>
+```
+
+## Database
+
+PostgreSQL is used for persistent application data.
+
+Database schema changes are managed using Flyway migrations:
+
+```text
+backend/src/main/resources/db/migration/
 ```
 
 ## Security
 
-The repository is configured to exclude local and generated files such as:
+The application implements:
+
+* Spring Security
+* JWT authentication
+* BCrypt password hashing
+* User ownership checks
+* API rate limiting
+* Request validation
+* CORS configuration
+* Centralized API error handling
+* Environment-based secret management
+
+Production credentials and secrets should be managed through secure environment variables or the deployment platform's secret-management system.
+
+## Deployment
+
+The frontend is configured for Vercel deployment.
+
+Backend and production configuration details are documented in:
 
 ```text
-.env
-node_modules/
-dist/
-target/
-.vite/
-*.log
-*.tsbuildinfo
+DEPLOYMENT.md
 ```
-
-Production credentials and secrets should always be provided through environment variables or the deployment platform's secret-management system.
 
 ## Project Status
 
-Landed is currently under active development.
+Landed is actively under development.
 
-The core full-stack application is operational with separated React/TypeScript frontend and Spring Boot backend applications, containerized local infrastructure, PostgreSQL persistence, authentication, application tracking, resume workflows, interview notes, and analytics.
+The current implementation includes the core full-stack job-search workflow, authentication, application tracking, resume management, resume matching, job importing, interview notes, analytics, PostgreSQL persistence, Docker-based local infrastructure, and frontend deployment.
 
 ## Author
 
@@ -352,15 +321,4 @@ The core full-stack application is operational with separated React/TypeScript f
 
 Software Engineering Student
 
-GitHub: `https://github.com/rndpk12`
-
----
-
-### License
-
-This project is currently maintained as a personal software engineering project.
-
-```
-
-**One change I strongly recommend:** don't claim features or libraries in the README unless they actually exist in your current codebase. Before you commit this, we can verify the `frontend/package.json`, `backend/pom.xml`, and actual project structure and make the README **100% accurate to your implementation**.
-```
+GitHub: [https://github.com/rndpk12](https://github.com/rndpk12)
