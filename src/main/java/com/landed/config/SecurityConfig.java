@@ -1,6 +1,7 @@
 package com.landed.config;
 
 import com.landed.security.JwtAuthenticationFilter;
+import com.landed.security.ApiRateLimitFilter;
 import com.landed.security.RestAccessDeniedHandler;
 import com.landed.security.RestAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,
+                                            ApiRateLimitFilter rateLimitFilter,
                                             RestAuthenticationEntryPoint entryPoint,
                                             RestAccessDeniedHandler accessDeniedHandler) throws Exception {
         return http
@@ -44,6 +46,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html", "/actuator/health/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 
@@ -76,7 +79,8 @@ public class SecurityConfig {
                 .collect(Collectors.toList()));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
-        configuration.setExposedHeaders(List.of("Location"));
+        configuration.setExposedHeaders(List.of("Location", "Retry-After", "X-RateLimit-Limit",
+                "X-RateLimit-Remaining"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

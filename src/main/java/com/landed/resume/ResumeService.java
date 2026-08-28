@@ -4,6 +4,7 @@ import com.landed.activity.ActivityService;
 import com.landed.activity.ActivityType;
 import com.landed.application.JobApplicationRepository;
 import com.landed.common.exception.ResourceNotFoundException;
+import com.landed.common.dto.PageResponse;
 import com.landed.resume.ResumeStorageService.StoredFile;
 import com.landed.resume.dto.ResumeDiffResponse;
 import com.landed.resume.dto.ResumeMetadataRequest;
@@ -12,6 +13,8 @@ import com.landed.resume.dto.ResumeVersionResponse;
 import com.landed.user.User;
 import com.landed.user.UserRepository;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -21,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.MessageDigest;
 import java.util.HexFormat;
 import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -34,19 +40,22 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final ResumeStorageService storageService;
     private final ResumeTextExtractor textExtractor;
+    private final ResumeProcessingService processingService;
     private final ResumeDiffService diffService;
     private final ActivityService activityService;
 
     public ResumeService(ResumeRepository resumeRepository, ResumeVersionRepository versionRepository,
                          JobApplicationRepository applicationRepository, UserRepository userRepository,
                          ResumeStorageService storageService, ResumeTextExtractor textExtractor,
-                         ResumeDiffService diffService, ActivityService activityService) {
+                         ResumeProcessingService processingService, ResumeDiffService diffService,
+                         ActivityService activityService) {
         this.resumeRepository = resumeRepository;
         this.versionRepository = versionRepository;
         this.applicationRepository = applicationRepository;
         this.userRepository = userRepository;
         this.storageService = storageService;
         this.textExtractor = textExtractor;
+        this.processingService = processingService;
         this.diffService = diffService;
         this.activityService = activityService;
     }
@@ -63,11 +72,28 @@ public class ResumeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResumeResponse> getAll(String email) {
+    public PageResponse<ResumeResponse> getAll(String email, int page, int size) {
         User user = requireUser(email);
-        return resumeRepository.findDistinctByUserIdOrderByUpdatedAtDesc(user.getId()).stream()
-                .map(this::response)
-                .toList();
+        int boundedPage = Math.max(0, page);
+        int boundedSize = Math.max(1, Math.min(size, 100));
+        var pageable = PageRequest.of(boundedPage, boundedSize, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        var resumePage = resumeRepository.findByUserId(user.getId(), pageable);
+        List<UUID> ids = resumePage.getContent().stream().map(Resume::getId).toList();
+        if (ids.isEmpty()) {
+            return PageResponse.from(resumePage.map(resume -> ResumeResponse.from(resume, 0)));
+        }
+
+        Map<UUID, Resume> detailedResumes = resumeRepository.findAllWithDetailsByIdIn(ids).stream()
+                .collect(Collectors.toMap(Resume::getId, Function.identity()));
+        Map<UUID, Integer> applicationCounts = applicationRepository.countByResumeIds(ids).stream()
+                .collect(Collectors.toMap(
+                        JobApplicationRepository.ResumeApplicationCount::getResumeId,
+                        count -> Math.toIntExact(count.getApplicationCount())));
+
+        return PageResponse.from(resumePage.map(resume -> {
+            Resume detailed = detailedResumes.getOrDefault(resume.getId(), resume);
+            return ResumeResponse.from(detailed, applicationCounts.getOrDefault(resume.getId(), 0));
+        }));
     }
 
     @Transactional(readOnly = true)
@@ -131,15 +157,29 @@ public class ResumeService {
             byte[] bytes = file.getBytes();
             String originalFilename = file.getOriginalFilename();
             String extension = extension(originalFilename);
-            String text = textExtractor.extract(bytes, extension);
             StoredFile stored = storageService.store(bytes, originalFilename);
             registerRollbackCleanup(stored.key());
             ResumeVersion version = new ResumeVersion(resume, versionNumber, stored.originalFilename(),
-                    contentType(stored.extension()), bytes.length, stored.key(), sha256(bytes), text);
-            return versionRepository.save(version);
+                    contentType(stored.extension()), bytes.length, stored.key(), sha256(bytes), "");
+            ResumeVersion saved = versionRepository.save(version);
+            registerProcessingAfterCommit(saved.getId(), bytes, extension);
+            return saved;
         } catch (java.io.IOException exception) {
             throw new IllegalStateException("Could not read uploaded resume", exception);
         }
+    }
+
+    private void registerProcessingAfterCommit(UUID versionId, byte[] bytes, String extension) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                try {
+                    processingService.process(versionId, bytes, extension);
+                } catch (RuntimeException exception) {
+                    processingService.markSubmissionFailed(versionId);
+                }
+            }
+        });
     }
 
     private void registerRollbackCleanup(String key) {

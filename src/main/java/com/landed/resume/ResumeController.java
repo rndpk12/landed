@@ -4,6 +4,7 @@ import com.landed.resume.dto.ResumeDiffResponse;
 import com.landed.resume.dto.ResumeMetadataRequest;
 import com.landed.resume.dto.ResumeResponse;
 import com.landed.resume.dto.ResumeVersionResponse;
+import com.landed.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -27,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -51,8 +51,10 @@ public class ResumeController {
 
     @GetMapping
     @Operation(summary = "List the current user's resume vault")
-    public List<ResumeResponse> getAll(Authentication authentication) {
-        return resumeService.getAll(authentication.getName());
+    public PageResponse<ResumeResponse> getAll(Authentication authentication,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "25") int size) {
+        return resumeService.getAll(authentication.getName(), page, size);
     }
 
     @GetMapping("/{id}")

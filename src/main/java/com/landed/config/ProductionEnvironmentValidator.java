@@ -27,6 +27,9 @@ public class ProductionEnvironmentValidator implements ApplicationRunner {
         require("DATABASE_URL");
         require("JWT_SECRET");
         validateCorsOrigins(require("CORS_ALLOWED_ORIGINS"));
+        if ("s3".equalsIgnoreCase(environment.getProperty("RESUME_STORAGE_TYPE", "s3"))) {
+            require("RESUME_STORAGE_BUCKET");
+        }
     }
 
     private String require(String name) {

@@ -1,6 +1,7 @@
 import { apiClient } from '../lib/apiClient';
 import { localDataStore, shouldUseLocalDataFallback } from '../lib/localDataStore';
 import type { Resume, ResumeUploadPayload, ResumeVersion, ResumeVersionUploadPayload } from '../types/resume';
+import type { PageResponse } from '../types/page';
 
 interface BackendResumeVersionResponse {
   id: string;
@@ -69,8 +70,12 @@ const metadataBlob = (payload: ResumeUploadPayload) => {
 export const resumeApi = {
   async list(): Promise<Resume[]> {
     try {
-      const response = await apiClient.get<BackendResumeResponse[]>('/resumes');
-      return response.data.map(mapResume);
+      const response = await apiClient.get<BackendResumeResponse[] | PageResponse<BackendResumeResponse>>(
+        '/resumes',
+        { params: { size: 100 } }
+      );
+      const resumes = Array.isArray(response.data) ? response.data : response.data.content;
+      return resumes.map(mapResume);
     } catch (error) {
       if (shouldUseLocalDataFallback(error)) {
         return localDataStore.listResumes();

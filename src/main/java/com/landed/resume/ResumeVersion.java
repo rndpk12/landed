@@ -3,6 +3,8 @@ package com.landed.resume;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -43,6 +45,13 @@ public class ResumeVersion {
     @Column(name = "text_content", nullable = false, columnDefinition = "TEXT")
     private String textContent;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "processing_status", nullable = false, length = 20)
+    private ResumeProcessingStatus processingStatus;
+
+    @Column(name = "processing_error", length = 500)
+    private String processingError;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -59,13 +68,29 @@ public class ResumeVersion {
         this.fileSize = fileSize;
         this.storageKey = storageKey;
         this.sha256 = sha256;
-        this.textContent = textContent;
+        this.textContent = textContent == null ? "" : textContent;
+        this.processingStatus = this.textContent.isBlank()
+                ? ResumeProcessingStatus.PENDING
+                : ResumeProcessingStatus.READY;
     }
 
     @PrePersist
     void prePersist() {
         if (id == null) id = UUID.randomUUID();
         if (createdAt == null) createdAt = Instant.now();
+        if (processingStatus == null) processingStatus = ResumeProcessingStatus.PENDING;
+    }
+
+    public void markReady(String extractedText) {
+        this.textContent = extractedText;
+        this.processingStatus = ResumeProcessingStatus.READY;
+        this.processingError = null;
+    }
+
+    public void markFailed(String message) {
+        this.textContent = "";
+        this.processingStatus = ResumeProcessingStatus.FAILED;
+        this.processingError = message == null ? "Resume processing failed" : message.substring(0, Math.min(500, message.length()));
     }
 
     public UUID getId() { return id; }
@@ -77,5 +102,7 @@ public class ResumeVersion {
     public String getStorageKey() { return storageKey; }
     public String getSha256() { return sha256; }
     public String getTextContent() { return textContent; }
+    public ResumeProcessingStatus getProcessingStatus() { return processingStatus; }
+    public String getProcessingError() { return processingError; }
     public Instant getCreatedAt() { return createdAt; }
 }

@@ -7,6 +7,7 @@ import com.landed.common.exception.ResourceNotFoundException;
 import com.landed.resume.Resume;
 import com.landed.resume.ResumeRepository;
 import com.landed.resume.ResumeVersion;
+import com.landed.resume.ResumeProcessingStatus;
 import com.landed.resumematch.dto.ResumeMatchAnalyzeRequest;
 import com.landed.resumematch.dto.ResumeMatchAnalyzeResponse;
 import com.landed.user.User;
@@ -58,6 +59,12 @@ public class ResumeMatchService {
         Resume resume = resumeRepository.findDistinctByIdAndUserId(request.resumeId(), user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Resume not found"));
         ResumeVersion version = latestVersion(resume);
+        if (version.getProcessingStatus() == ResumeProcessingStatus.PENDING) {
+            throw new BadRequestException("Resume text is still processing. Try again shortly.");
+        }
+        if (version.getProcessingStatus() == ResumeProcessingStatus.FAILED) {
+            throw new BadRequestException("Resume text could not be processed. Upload the file again.");
+        }
 
         List<String> resumeTokens = tokenize(version.getTextContent());
         List<String> jobTokens = tokenize(request.jobDescription());

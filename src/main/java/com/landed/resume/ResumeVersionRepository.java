@@ -9,4 +9,6 @@ public interface ResumeVersionRepository extends JpaRepository<ResumeVersion, UU
     Optional<ResumeVersion> findByIdAndResumeUserId(UUID id, UUID userId);
     int countByResumeId(UUID resumeId);
     Optional<ResumeVersion> findTopByResumeIdOrderByVersionNumberDesc(UUID resumeId);
+
+    long countByProcessingStatus(ResumeProcessingStatus processingStatus);
 }

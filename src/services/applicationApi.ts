@@ -1,6 +1,7 @@
 import { apiClient } from '../lib/apiClient';
 import { localDataStore, shouldUseLocalDataFallback } from '../lib/localDataStore';
 import type { Application, ApplicationPayload, ApplicationStatus } from '../types/application';
+import type { PageResponse } from '../types/page';
 
 type BackendApplicationStatus = 'SAVED' | 'APPLIED' | 'OA' | 'INTERVIEW' | 'OFFER' | 'REJECTED' | 'ACCEPTED';
 
@@ -116,8 +117,12 @@ const mapPayload = (payload: ApplicationPayload): BackendApplicationRequest => (
 export const applicationApi = {
   async list(): Promise<Application[]> {
     try {
-      const response = await apiClient.get<BackendApplicationResponse[]>('/applications');
-      return response.data.map(mapApplication);
+      const response = await apiClient.get<BackendApplicationResponse[] | PageResponse<BackendApplicationResponse>>(
+        '/applications',
+        { params: { size: 100 } }
+      );
+      const applications = Array.isArray(response.data) ? response.data : response.data.content;
+      return applications.map(mapApplication);
     } catch (error) {
       if (shouldUseLocalDataFallback(error)) {
         return localDataStore.listApplications();

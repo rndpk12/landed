@@ -6,6 +6,7 @@ import com.landed.application.dto.ApplicationRequest;
 import com.landed.application.dto.ApplicationResponse;
 import com.landed.application.dto.StageNoteRequest;
 import com.landed.application.dto.StageNoteResponse;
+import com.landed.common.dto.PageResponse;
 import com.landed.common.exception.ResourceNotFoundException;
 import com.landed.resume.ResumeVersion;
 import com.landed.resume.ResumeVersionRepository;
@@ -13,8 +14,11 @@ import com.landed.user.User;
 import com.landed.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
-import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Service
@@ -52,11 +56,25 @@ public class JobApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ApplicationResponse> getAll(String email) {
+    public PageResponse<ApplicationResponse> getAll(String email, int page, int size, String search,
+                                                    ApplicationStatus status) {
         User user = requireUser(email);
-        return applicationRepository.findAllByUserIdOrderByCreatedAtDesc(user.getId()).stream()
-                .map(ApplicationResponse::from)
-                .toList();
+        int boundedPage = Math.max(0, page);
+        int boundedSize = Math.max(1, Math.min(size, 100));
+        Specification<JobApplication> specification = (root, query, builder) ->
+                builder.equal(root.get("user").get("id"), user.getId());
+        if (search != null && !search.isBlank()) {
+            String pattern = "%" + search.trim().toLowerCase(Locale.ROOT) + "%";
+            specification = specification.and((root, query, builder) -> builder.or(
+                    builder.like(builder.lower(root.get("company")), pattern),
+                    builder.like(builder.lower(root.get("role")), pattern),
+                    builder.like(builder.lower(root.get("location")), pattern)));
+        }
+        if (status != null) {
+            specification = specification.and((root, query, builder) -> builder.equal(root.get("status"), status));
+        }
+        var pageable = PageRequest.of(boundedPage, boundedSize, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return PageResponse.from(applicationRepository.findAll(specification, pageable).map(ApplicationResponse::from));
     }
 
     @Transactional

@@ -1,17 +1,10 @@
 package com.landed.resume;
 
 import com.landed.common.exception.BadRequestException;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -19,19 +12,10 @@ import java.util.UUID;
 @Service
 public class ResumeStorageService {
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of("pdf", "docx", "txt");
-    private final Path root;
+    private final ResumeStorageBackend backend;
 
-    public ResumeStorageService(@Value("${app.storage.resume-directory}") String directory) {
-        this.root = Path.of(directory).toAbsolutePath().normalize();
-    }
-
-    @PostConstruct
-    void initialize() {
-        try {
-            Files.createDirectories(root);
-        } catch (IOException exception) {
-            throw new IllegalStateException("Could not initialize resume storage", exception);
-        }
+    public ResumeStorageService(ResumeStorageBackend backend) {
+        this.backend = backend;
     }
 
     public StoredFile store(byte[] bytes, String originalFilename) {
@@ -42,40 +26,24 @@ public class ResumeStorageService {
             throw new BadRequestException("Supported resume formats are PDF, DOCX, and TXT");
         }
         String key = UUID.randomUUID() + "." + extension;
-        Path target = resolve(key);
-        try {
-            Files.write(target, bytes, StandardOpenOption.CREATE_NEW);
-            return new StoredFile(key, filename, extension);
-        } catch (IOException exception) {
-            throw new IllegalStateException("Could not store resume file", exception);
-        }
+        backend.store(key, bytes, contentType(extension));
+        return new StoredFile(key, filename, extension);
     }
 
     public Resource load(String key) {
-        try {
-            Path path = resolve(key);
-            Resource resource = new UrlResource(path.toUri());
-            if (!resource.exists() || !resource.isReadable()) {
-                throw new IllegalStateException("Stored resume file is unavailable");
-            }
-            return resource;
-        } catch (MalformedURLException exception) {
-            throw new IllegalStateException("Stored resume path is invalid", exception);
-        }
+        validateKey(key);
+        return backend.load(key);
     }
 
     public void delete(String key) {
-        try {
-            Files.deleteIfExists(resolve(key));
-        } catch (IOException exception) {
-            throw new IllegalStateException("Could not delete stored resume", exception);
-        }
+        validateKey(key);
+        backend.delete(key);
     }
 
-    private Path resolve(String key) {
-        Path path = root.resolve(key).normalize();
-        if (!path.startsWith(root)) throw new IllegalArgumentException("Invalid storage key");
-        return path;
+    private void validateKey(String key) {
+        if (key == null || key.isBlank() || !Path.of(key).getFileName().toString().equals(key)) {
+            throw new IllegalArgumentException("Invalid storage key");
+        }
     }
 
     private String sanitizeFilename(String value) {
@@ -88,6 +56,15 @@ public class ResumeStorageService {
     private String extension(String filename) {
         int dot = filename.lastIndexOf('.');
         return dot < 0 ? "" : filename.substring(dot + 1).toLowerCase(Locale.ROOT);
+    }
+
+    private String contentType(String extension) {
+        return switch (extension) {
+            case "pdf" -> "application/pdf";
+            case "docx" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case "txt" -> "text/plain";
+            default -> "application/octet-stream";
+        };
     }
 
     public record StoredFile(String key, String originalFilename, String extension) { }

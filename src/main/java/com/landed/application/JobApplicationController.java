@@ -4,6 +4,7 @@ import com.landed.application.dto.ApplicationRequest;
 import com.landed.application.dto.ApplicationResponse;
 import com.landed.application.dto.StageNoteRequest;
 import com.landed.application.dto.StageNoteResponse;
+import com.landed.common.dto.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,9 +42,14 @@ public class JobApplicationController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all applications owned by the current user")
-    public List<ApplicationResponse> getAll(Authentication authentication) {
-        return applicationService.getAll(authentication.getName());
+    @Operation(summary = "Get a page of applications owned by the current user")
+    public PageResponse<ApplicationResponse> getAll(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) ApplicationStatus status) {
+        return applicationService.getAll(authentication.getName(), page, size, search, status);
     }
 
     @PutMapping("/{id}")
