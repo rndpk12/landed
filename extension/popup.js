@@ -26,12 +26,9 @@ const backendStatus = {
   Accepted: 'ACCEPTED'
 };
 
-const portalUrlFor = (apiUrl) => {
-  const api = new URL(apiUrl);
-  return api.hostname === 'localhost' || api.hostname === '127.0.0.1'
-    ? 'http://localhost:3000/applications'
-    : 'https://getlanded.vercel.app/applications';
-};
+// The extension may use a local API during development, but this button is
+// intentionally a production hand-off so users never get sent to localhost.
+const portalUrlFor = () => 'https://getlanded.vercel.app/login';
 
 const ensureApiPermission = async (apiUrl) => chrome.permissions.request({ origins: [apiOrigin(apiUrl)] });
 
@@ -135,8 +132,7 @@ byId('application-form').addEventListener('submit', async (event) => {
 });
 
 byId('open-landed').addEventListener('click', async () => {
-  const { landedApiUrl } = await chrome.storage.local.get('landedApiUrl');
-  await chrome.tabs.create({ url: portalUrlFor(landedApiUrl) });
+  await chrome.tabs.create({ url: portalUrlFor() });
   window.close();
 });
 
