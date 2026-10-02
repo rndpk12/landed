@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { BrandLogo } from '../BrandLogo';
 
 export const LandingNav = () => {
   const navigate = useNavigate();
@@ -7,10 +8,7 @@ export const LandingNav = () => {
   return (
     <nav className="fixed left-0 right-0 top-0 z-[199] flex h-[68px] items-center justify-between border-b-[3px] border-black bg-[#fffaf1]/95 px-4 backdrop-blur md:px-8">
       <a className="group flex items-center gap-2 no-underline" href="#">
-        <span className="grid h-10 w-10 place-items-center border-[3px] border-black bg-[#f97316] font-black text-white shadow-[4px_4px_0_#000] transition group-hover:-translate-y-0.5 group-hover:shadow-[6px_6px_0_#000]">
-          L
-        </span>
-        <span className="text-[22px] font-black italic text-black">LANDED</span>
+          <BrandLogo className="h-10 w-auto transition group-hover:-translate-y-0.5" />
       </a>
       <ul className="hidden list-none items-center gap-8 md:flex">
         {[

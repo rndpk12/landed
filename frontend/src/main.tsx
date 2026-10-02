@@ -15,14 +15,23 @@ const queryClient = new QueryClient({
   }
 });
 
+const googleClientId = (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim();
+const app = (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
+  </QueryClientProvider>
+);
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <AppRouter />
-        </AuthProvider>
-      </QueryClientProvider>
-    </GoogleOAuthProvider>
+    {googleClientId ? (
+      <GoogleOAuthProvider clientId={googleClientId}>
+        {app}
+      </GoogleOAuthProvider>
+    ) : (
+      app
+    )}
   </React.StrictMode>
 );

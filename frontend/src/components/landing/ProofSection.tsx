@@ -51,7 +51,7 @@ export const CtaSection = () => {
 
   return (
     <section className="brutal-grid px-5 pb-24 md:px-8">
-      <Reveal className="mx-auto max-w-[1080px] border-[4px] border-black bg-[#f97316] px-6 py-16 text-center shadow-[10px_10px_0_#000] md:px-12">
+      <Reveal className="mx-auto max-w-[1080px] border-[4px] border-black bg-[#f97316] px-6 py-10 text-center shadow-[10px_10px_0_#000] md:px-12">
         <h2 className="mx-auto max-w-[820px] text-[clamp(42px,7vw,86px)] font-black uppercase leading-none text-white">
           Ready to stop guessing?
         </h2>

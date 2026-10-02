@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { BrandLogo } from '../BrandLogo';
 
 const columns = [
   ['Product', 'Resume vault', 'Application tracker', 'Diff viewer', 'Job import'],
@@ -13,12 +14,7 @@ export const LandingFooter = () => {
     <footer className="brutal-grid border-t-[3px] border-black bg-[#fffaf1] px-5 pt-14 md:px-8">
       <div className="mx-auto grid max-w-[1080px] gap-10 md:grid-cols-[1.35fr_1fr_1fr_1fr]">
         <div>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="grid h-10 w-10 place-items-center border-[3px] border-black bg-[#f97316] font-black text-white shadow-[4px_4px_0_#000]">
-              L
-            </span>
-            <span className="text-[22px] font-black italic">LANDED</span>
-          </div>
+          <BrandLogo variant="wordmark" className="mb-3 h-10 w-auto" />
           <p className="mb-5 max-w-[260px] text-[14px] font-bold leading-7 text-[#555]">
             Version control for your job search. One place for every resume, application, and offer.
           </p>
@@ -45,12 +41,8 @@ export const LandingFooter = () => {
           </div>
         ))}
       </div>
-      <div className="mx-auto mt-14 flex max-w-[1080px] items-center justify-center border-y-[3px] border-black py-8">
-        <div className="select-none whitespace-nowrap text-[clamp(88px,24vw,300px)] font-black uppercase leading-[0.82] text-black">
-          Landed
-        </div>
-      </div>
-      <div className="mx-auto flex max-w-[1080px] flex-col gap-3 py-5 text-[12px] font-bold text-[#555] sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 -mx-5 border-t-[3px] border-black md:-mx-8" />
+      <div className="mx-auto flex max-w-[1080px] flex-col gap-3 pb-3 pt-3 text-[12px] font-bold text-[#555] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-5">
           {['Terms', 'Privacy', 'Security'].map((item) => (
             <a className="text-[#555] no-underline transition hover:text-black" href="#" key={item}>

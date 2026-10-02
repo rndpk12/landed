@@ -6,6 +6,8 @@ import { useForm, type FieldError, type UseFormRegisterReturn } from 'react-hook
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
+import { authApi } from '../services/authApi';
+import { BrandLogo } from '../components/BrandLogo';
 
 const loginSchema = z.object({
   email: z.string().email('Enter a valid email.'),
@@ -66,9 +68,11 @@ export const LoginPage = () => {
     searchParams.get('mode') === 'register' ? 'register' : 'login'
   );
   const [authError, setAuthError] = useState<string | null>(null);
-  const googleConfigured = Boolean(
+  const hasGoogleClientId = Boolean(
     (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim()
   );
+  const [googleConfigured, setGoogleConfigured] = useState(false);
+  const [googleConfigChecked, setGoogleConfigChecked] = useState(!hasGoogleClientId);
 
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -83,6 +87,29 @@ export const LoginPage = () => {
   useEffect(() => {
     setMode(searchParams.get('mode') === 'register' ? 'register' : 'login');
   }, [searchParams]);
+
+  useEffect(() => {
+    let active = true;
+
+    if (!hasGoogleClientId) {
+      setGoogleConfigured(false);
+      setGoogleConfigChecked(true);
+      return () => {
+        active = false;
+      };
+    }
+
+    setGoogleConfigChecked(false);
+    void authApi.isGoogleSignInConfigured().then((configured) => {
+      if (!active) return;
+      setGoogleConfigured(configured);
+      setGoogleConfigChecked(true);
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [hasGoogleClientId]);
 
   const onLoginSubmit = async (values: LoginValues) => {
     setAuthError(null);
@@ -116,10 +143,6 @@ export const LoginPage = () => {
     }
   };
 
-  const showGoogleConfigurationError = () => {
-    setAuthError('Google sign-in is not configured yet. Add VITE_GOOGLE_CLIENT_ID to enable it.');
-  };
-
   if (isAuthenticated()) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -137,57 +160,32 @@ export const LoginPage = () => {
   return (
     <main className="landed-brutal min-h-dvh bg-[#fbf7ef] font-sans text-black">
       <section className="flex min-h-dvh flex-col overflow-hidden bg-[#fffaf1]">
-        <header className="flex h-[72px] shrink-0 items-center justify-between border-b-4 border-black bg-[#fffaf1] px-6 sm:px-10 lg:px-[8%]">
-          <div className="flex items-center gap-8">
+        <header className="relative flex h-[72px] shrink-0 items-center justify-between border-b-4 border-black bg-[#fffaf1] px-6 sm:px-10">
+          <div>
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 bg-transparent text-left"
+              className="bg-transparent text-left"
             >
-              <span className="grid h-9 w-9 place-items-center rounded-md border-[3px] border-black bg-[#f97316] text-base font-black text-white shadow-[3px_3px_0_#000]">
-                L
-              </span>
-              <span className="text-[22px] font-black italic">LANDED</span>
+              <BrandLogo className="h-9 w-auto" />
             </button>
-            <nav className="hidden items-center gap-7 text-[14px] font-black uppercase md:flex">
-              <span>Features</span>
-              <span>Pricing</span>
-              <span>FAQ</span>
-            </nav>
           </div>
-            <button
-              type="button"
-              onClick={() => switchMode(isRegister ? 'login' : 'register')}
-              className="border-[3px] border-black bg-[#f97316] px-5 py-2.5 text-[13px] font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
-            >
-              {isRegister ? 'Log in' : 'Create account'}
-            </button>
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[14px] font-black uppercase md:flex">
+            <span>Features</span>
+            <span>Pricing</span>
+            <span>FAQ</span>
+          </nav>
+          <button
+            type="button"
+            onClick={() => switchMode(isRegister ? 'login' : 'register')}
+            className="border-[3px] border-black bg-[#f97316] px-5 py-2.5 text-[13px] font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5"
+          >
+            {isRegister ? 'Log in' : 'Create account'}
+          </button>
         </header>
 
-        <div className="grid flex-1 lg:grid-cols-2">
-          <aside className="flex min-h-[320px] flex-col justify-center border-b-4 border-black bg-[#f97316] px-8 py-10 lg:min-h-0 lg:border-b-0 lg:border-r-4 lg:px-[10%]">
-            <div className="max-w-[640px]">
-              <h1 className="text-[clamp(60px,4.3vw,84px)] font-black uppercase leading-[0.82] tracking-normal text-black">
-                {isRegister ? (
-                  <>
-                    Start<br />landing
-                  </>
-                ) : (
-                  <>
-                    Welcome<br />back
-                  </>
-                )}
-              </h1>
-              <p className="mt-8 border-l-4 border-black pl-5 text-[clamp(18px,1.1vw,21px)] font-medium leading-tight text-black">
-                {isRegister
-                  ? 'Create your workspace for resumes, job links, interview notes, analytics, and every next move.'
-                  : 'Jump back into your pipeline with every application, resume version, and follow-up in sight.'}
-              </p>
-            </div>
-          </aside>
-
-          <div className="flex items-center justify-center bg-white px-6 py-10 sm:px-10 lg:px-[10%]">
-            <div className="w-full max-w-[520px]">
+        <div className="flex flex-1 items-center justify-center bg-white px-6 py-10 sm:px-10">
+          <div className="w-full max-w-[520px]">
               <h2 className="text-[clamp(28px,1.7vw,34px)] font-black uppercase leading-[0.95] text-[#211715]">
                 {isRegister ? 'Create your account' : 'Log in to your account'}
               </h2>
@@ -214,11 +212,7 @@ export const LoginPage = () => {
                       onError={setAuthError}
                     />
                   ) : (
-                    <GoogleAuthButton
-                      disabled={loading}
-                      loading={false}
-                      onClick={showGoogleConfigurationError}
-                    />
+                    <GoogleAuthUnavailable checked={googleConfigChecked} />
                   )}
                   <AuthDivider />
                   <AuthField
@@ -260,11 +254,7 @@ export const LoginPage = () => {
                       onError={setAuthError}
                     />
                   ) : (
-                    <GoogleAuthButton
-                      disabled={loading}
-                      loading={false}
-                      onClick={showGoogleConfigurationError}
-                    />
+                    <GoogleAuthUnavailable checked={googleConfigChecked} />
                   )}
                   <AuthDivider />
                   <AuthField
@@ -302,7 +292,6 @@ export const LoginPage = () => {
                 <span className="border-b-2 border-[#f97316] font-black text-black">Terms</span> and{' '}
                 <span className="border-b-2 border-[#f97316] font-black text-black">Privacy Policy</span>.
               </p>
-            </div>
           </div>
         </div>
       </section>
@@ -374,6 +363,17 @@ const GoogleAuthButton = ({
     <GoogleMark />
     {loading ? 'Connecting to Google...' : 'Login with Google'}
   </button>
+);
+
+const GoogleAuthUnavailable = ({ checked }: { checked: boolean }) => (
+  <div>
+    <GoogleAuthButton disabled loading={!checked} onClick={() => undefined} />
+    {checked ? (
+      <p className="mt-2 text-center text-xs font-semibold text-slate-500">
+        Google sign-in is unavailable. Check your Google configuration.
+      </p>
+    ) : null}
+  </div>
 );
 
 const AuthDivider = () => (

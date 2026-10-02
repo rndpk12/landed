@@ -88,8 +88,9 @@ export const PricingFaqSection = () => (
           />
           <PriceCard
             highlighted
-            cta="Go pro"
+            cta="Start free"
             name="Pro"
+            period="lifetime"
             price="$9"
             points={['Everything in Free', 'Advanced analytics', 'Resume performance', 'Priority updates']}
           />
@@ -126,11 +127,12 @@ type PriceCardProps = {
   cta: string;
   highlighted?: boolean;
   name: string;
+  period?: string;
   points: string[];
   price: string;
 };
 
-const PriceCard = ({ cta, highlighted, name, points, price }: PriceCardProps) => (
+const PriceCard = ({ cta, highlighted, name, period = 'month', points, price }: PriceCardProps) => (
   <Reveal>
     <div
       className={`relative h-full border-[4px] border-black p-7 shadow-[8px_8px_0_#000] ${
@@ -139,13 +141,13 @@ const PriceCard = ({ cta, highlighted, name, points, price }: PriceCardProps) =>
     >
       {highlighted ? (
         <div className="absolute -top-5 right-6 rotate-2 border-[3px] border-black bg-[#f9d44a] px-3 py-1 text-[12px] font-black uppercase text-black shadow-[4px_4px_0_#000]">
-          Popular
+          Now free
         </div>
       ) : null}
       <h3 className="text-[30px] font-black uppercase">{name}</h3>
       <div className="mb-7 mt-4 flex items-end gap-2">
         <span className="text-[64px] font-black leading-none">{price}</span>
-        <span className="pb-2 text-[15px] font-black uppercase opacity-70">/month</span>
+        <span className="pb-2 text-[15px] font-black uppercase opacity-70">/{period}</span>
       </div>
       <ul className="mb-8 space-y-3">
         {points.map((point) => (

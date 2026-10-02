@@ -218,5 +218,5 @@ docker build -t landed-api:prod .
 4. Vercel `VITE_API_BASE_URL` points to Railway with `/api/v1`.
 5. Railway `CORS_ALLOWED_ORIGINS` includes the Vercel/custom frontend origin.
 6. Vercel deployment loads and login/register calls reach the API.
-7. Google sign-in appears only when `VITE_GOOGLE_CLIENT_ID` or backend `GOOGLE_CLIENT_ID`
-   is configured, and both frontend/backend values match.
+7. Google sign-in appears only when both `VITE_GOOGLE_CLIENT_ID` and backend
+   `GOOGLE_CLIENT_ID` are configured with the same value.

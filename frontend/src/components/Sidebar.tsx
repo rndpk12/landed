@@ -10,6 +10,7 @@ import {
   Settings
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { BrandLogo } from './BrandLogo';
 
 const navItems = [
   { label: 'Dashboard', path: '/dashboard', icon: Home },
@@ -36,11 +37,8 @@ export const Sidebar = ({ open, onClose }: { open: boolean; onClose: () => void 
         }
       >
         <div className="flex h-16 shrink-0 items-center border-b-[3px] border-black px-4">
-          <Link to="/dashboard" className="flex items-center gap-2 no-underline">
-            <span className="grid h-9 w-9 place-items-center border-[3px] border-black bg-[#f97316] text-sm font-black text-white shadow-[3px_3px_0_#000]">
-              L
-            </span>
-            <span className="text-[20px] font-black italic text-black">LANDED</span>
+          <Link to="/dashboard" className="no-underline">
+            <BrandLogo className="h-9 w-auto" />
           </Link>
         </div>
 
