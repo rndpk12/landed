@@ -44,23 +44,23 @@ select {
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-slate-200 bg-white shadow-card;
+    @apply border-[3px] border-black bg-white shadow-[5px_5px_0_#000];
   }
 
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary-600 focus:ring-4 focus:ring-primary-100;
+    @apply w-full border-[3px] border-black bg-white px-3 py-2.5 text-sm font-bold text-black outline-none transition placeholder:text-[#777] focus:bg-[#fffaf1] focus:shadow-[3px_3px_0_#000];
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-700 focus:outline-none focus:ring-4 focus:ring-primary-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 border-[3px] border-black bg-[#f97316] px-4 py-2.5 text-xs font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000] focus:outline-none disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100;
+    @apply inline-flex items-center justify-center gap-2 border-[3px] border-black bg-white px-4 py-2.5 text-xs font-black uppercase text-black shadow-[3px_3px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a] focus:outline-none disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .page-shell {
-    @apply mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 sm:px-5 lg:px-6;
+    @apply mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-7 sm:px-5 lg:px-6;
   }
 }
 

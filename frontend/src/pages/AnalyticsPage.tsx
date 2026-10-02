@@ -12,7 +12,7 @@ import type { ResumePerformance } from '../types/resumePerformance';
 
 const statuses: ApplicationStatus[] = ['Saved', 'Applied', 'OA', 'Interview', 'Offer', 'Rejected', 'Accepted'];
 const funnelStatuses: ApplicationStatus[] = ['Applied', 'OA', 'Interview', 'Offer'];
-const colors = ['#94a3b8', '#2563EB', '#8b5cf6', '#f59e0b', '#10b981', '#f43f5e', '#22c55e'];
+const colors = ['#f8efe2', '#f9d44a', '#5dd6e4', '#f97316', '#b7ef8c', '#fecaca', '#080808'];
 
 export const AnalyticsPage = () => {
   const applicationsQuery = useQuery({ queryKey: ['applications'], queryFn: applicationApi.list });
@@ -67,9 +67,10 @@ export const AnalyticsPage = () => {
 
   return (
     <div className="page-shell">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-950">Analytics</h2>
-        <p className="mt-1 text-sm text-slate-500">A crisp view of pipeline health and conversion.</p>
+      <div className="border-b-[3px] border-black pb-6">
+        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#f97316]">Know your numbers</p>
+        <h2 className="mt-1 text-[clamp(30px,3vw,42px)] font-black uppercase leading-none tracking-[-0.045em] text-black">Analytics</h2>
+        <p className="mt-3 text-sm font-bold text-[#555]">A crisp view of pipeline health and conversion.</p>
       </div>
       {!applications.length ? (
         <EmptyState icon={Search} title="No analytics yet" description="Add applications to unlock status distribution, funnel, and trend insights." />
@@ -101,7 +102,7 @@ export const AnalyticsPage = () => {
                   <XAxis dataKey="month" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Bar dataKey="applications" fill="#2563EB" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="applications" fill="#f97316" radius={[0, 0, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -112,7 +113,7 @@ export const AnalyticsPage = () => {
                   <XAxis dataKey="name" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#2563EB" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="value" fill="#f9d44a" radius={[0, 0, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -123,7 +124,7 @@ export const AnalyticsPage = () => {
                   <XAxis dataKey="month" />
                   <YAxis allowDecimals={false} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="applications" stroke="#2563EB" strokeWidth={3} dot={{ r: 4 }} />
+                  <Line type="monotone" dataKey="applications" stroke="#f97316" strokeWidth={3} dot={{ r: 4 }} />
                 </LineChart>
               </ResponsiveContainer>
             </ChartCard>
@@ -212,7 +213,7 @@ const ResumePerformanceSection = ({ performance }: { performance: ResumePerforma
                 <XAxis type="number" domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
                 <YAxis dataKey="resumeName" type="category" width={120} tick={{ fontSize: 12 }} />
                 <Tooltip formatter={(value) => [`${value}%`, 'Conversion Rate']} />
-                <Bar dataKey="conversionRate" fill="#2563EB" radius={[0, 8, 8, 0]} />
+                <Bar dataKey="conversionRate" fill="#f97316" radius={[0, 0, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

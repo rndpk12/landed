@@ -157,10 +157,11 @@ export const InterviewNotesPage = () => {
 
   return (
     <div className="page-shell">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-5 border-b-[3px] border-black pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-950">Interview Notes</h2>
-          <p className="mt-1 text-sm text-slate-500">Track questions, notes, and outcomes for every interview round.</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#f97316]">Capture what matters</p>
+          <h2 className="mt-1 text-[clamp(30px,3vw,42px)] font-black uppercase leading-none tracking-[-0.045em] text-black">Interview Notes</h2>
+          <p className="mt-3 text-sm font-bold text-[#555]">Track questions, notes, and outcomes for every interview round.</p>
         </div>
         <button className="btn-primary" type="button" onClick={openCreateModal}>
           <Plus className="h-4 w-4" />
@@ -198,8 +199,8 @@ export const InterviewNotesPage = () => {
           ) : notes.length ? (
             <div className="space-y-5">
               {notes.map((note) => (
-                <article key={note.id} className="relative rounded-2xl border border-slate-200 p-5">
-                  <div className="absolute -left-2 top-6 h-4 w-4 rounded-full bg-primary-600 ring-4 ring-primary-50" />
+                <article key={note.id} className="relative border-[3px] border-black bg-[#fffaf1] p-5 shadow-[4px_4px_0_#000]">
+                  <div className="absolute -left-2 top-6 h-4 w-4 border-2 border-black bg-[#f97316]" />
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                       <h4 className="text-base font-bold text-slate-950">Round {note.roundNumber}</h4>
@@ -283,12 +284,12 @@ export const InterviewNotesPage = () => {
 
 const ApplicationPicker = ({ applications, selectedId, onSelect }: { applications: Application[]; selectedId: string; onSelect: (id: string) => void }) => (
   <div className="card p-4">
-    <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Applications</h3>
+    <h3 className="text-[11px] font-black uppercase tracking-wide text-black">Applications</h3>
     <div className="mt-4 space-y-2">
       {applications.map((application) => (
         <button
           key={application.id}
-          className={'w-full rounded-2xl px-4 py-3 text-left transition ' + (selectedId === application.id ? 'bg-primary-50 text-primary-700 ring-1 ring-primary-100' : 'bg-slate-50 text-slate-700 hover:bg-slate-100')}
+          className={'w-full border-2 border-black px-4 py-3 text-left transition hover:-translate-y-0.5 ' + (selectedId === application.id ? 'bg-[#f97316] text-white shadow-[3px_3px_0_#000]' : 'bg-[#f8efe2] text-black hover:bg-[#f9d44a]')}
           type="button"
           onClick={() => onSelect(application.id)}
         >
@@ -301,9 +302,9 @@ const ApplicationPicker = ({ applications, selectedId, onSelect }: { application
 );
 
 const NoteBlock = ({ title, value }: { title: string; value?: string | null }) => (
-  <div className="rounded-2xl bg-slate-50 p-4">
-    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{title}</p>
-    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">{value || 'Not captured yet.'}</p>
+  <div className="border-2 border-black bg-white p-4">
+    <p className="text-[11px] font-black uppercase tracking-wide text-black">{title}</p>
+    <p className="mt-2 whitespace-pre-wrap text-sm font-bold leading-6 text-[#555]">{value || 'Not captured yet.'}</p>
   </div>
 );
 

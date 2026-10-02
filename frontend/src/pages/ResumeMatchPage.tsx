@@ -43,11 +43,11 @@ export const ResumeMatchPage = () => {
 
   return (
     <div className="page-shell">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="flex flex-col gap-4 border-b-[3px] border-black pb-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-primary-600">Resume intelligence</p>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">Resume Match Engine</h2>
-          <p className="mt-1 max-w-2xl text-sm text-slate-500">Compare an uploaded resume against a job description using local keyword, TF-IDF, and similarity analysis.</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#f97316]">Resume intelligence</p>
+          <h2 className="mt-1 text-[clamp(30px,3vw,42px)] font-black uppercase leading-none tracking-[-0.045em] text-black">Resume Match Engine</h2>
+          <p className="mt-3 max-w-2xl text-sm font-bold text-[#555]">Compare an uploaded resume against a job description using local keyword, TF-IDF, and similarity analysis.</p>
         </div>
       </div>
 
@@ -151,7 +151,7 @@ const ProgressRing = ({ score }: { score: number }) => {
     <div className="relative h-36 w-36 shrink-0">
       <svg className="h-36 w-36 -rotate-90" viewBox="0 0 144 144" aria-hidden="true">
         <circle cx="72" cy="72" r={radius} fill="none" stroke="#e2e8f0" strokeWidth="12" />
-        <circle cx="72" cy="72" r={radius} fill="none" stroke="#2563EB" strokeWidth="12" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} />
+        <circle cx="72" cy="72" r={radius} fill="none" stroke="#f97316" strokeWidth="12" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-slate-950">{score}%</div>
     </div>
@@ -159,17 +159,17 @@ const ProgressRing = ({ score }: { score: number }) => {
 };
 
 const KeywordCard = ({ icon: Icon, title, tone, keywords, empty }: { icon: typeof CheckCircle2; title: string; tone: 'emerald' | 'rose'; keywords: string[]; empty: string }) => {
-  const toneClass = tone === 'emerald' ? 'bg-emerald-50 text-emerald-700 ring-emerald-200' : 'bg-rose-50 text-rose-700 ring-rose-200';
+  const toneClass = tone === 'emerald' ? 'bg-[#b7ef8c] text-black' : 'bg-[#fee2e2] text-[#991b1b]';
 
   return (
     <div className="card p-5">
       <div className="flex items-center gap-3">
-        <div className={'rounded-xl p-3 ring-1 ' + toneClass}><Icon className="h-5 w-5" /></div>
+        <div className={'border-[3px] border-black p-3 ' + toneClass}><Icon className="h-5 w-5" /></div>
         <h3 className="text-lg font-semibold text-slate-950">{title}</h3>
       </div>
       <div className="mt-5 flex flex-wrap gap-2">
         {keywords.length ? keywords.map((keyword) => (
-          <span key={keyword} className={'rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ' + toneClass}>{formatKeyword(keyword)}</span>
+          <span key={keyword} className={'border-2 border-black px-3 py-1.5 text-sm font-black ' + toneClass}>{formatKeyword(keyword)}</span>
         )) : <p className="text-sm text-slate-500">{empty}</p>}
       </div>
     </div>
