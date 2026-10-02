@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Landed</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="brand"><img src="landed-lockup.svg" alt="Landed" /></header>
+
+      <section id="login-view" class="view" hidden>
+        <p class="eyebrow">Browser extension</p>
+        <h1>Connect Landed</h1>
+        <p class="muted">Sign in once, then save jobs from the page you are viewing.</p>
+        <form id="login-form">
+          <label>API URL<input id="api-url" type="url" required /></label>
+          <button id="google-login" class="google" type="button"><span class="google-mark">G</span> Continue with Google</button>
+          <p class="divider"><span>or with email</span></p>
+          <label>Email<input id="email" type="email" autocomplete="email" required /></label>
+          <label>Password<input id="password" type="password" autocomplete="current-password" required /></label>
+          <button class="primary" type="submit">Connect account <span>→</span></button>
+        </form>
+      </section>
+
+      <section id="job-view" class="view" hidden>
+        <div class="topline"><p class="eyebrow">Save this opportunity</p><button id="logout" class="text-button" type="button">Log out</button></div>
+        <h1>Job capture</h1>
+        <p id="page-url" class="url"></p>
+        <button id="import-job" class="secondary" type="button">Read job page <span>↗</span></button>
+        <form id="application-form" hidden>
+          <label>Company<input id="company" required /></label>
+          <label>Role<input id="role" required /></label>
+          <div class="split"><label>Location<input id="location" /></label><label>Status<select id="status"><option>Saved</option><option selected>Applied</option></select></label></div>
+          <label>Job description<textarea id="description" rows="5"></textarea></label>
+          <label>Notes<textarea id="notes" rows="2"></textarea></label>
+          <button class="primary" type="submit">Save to Landed <span>→</span></button>
+        </form>
+        <button id="open-landed" class="secondary" type="button" hidden>Open Landed <span>↗</span></button>
+      </section>
+
+      <p id="message" class="message" role="status"></p>
+    </main>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>

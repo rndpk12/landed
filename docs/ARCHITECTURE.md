@@ -32,6 +32,10 @@ Landed/
 │       ├── routes/                  # Router and access control
 │       ├── services/                # Domain API clients
 │       └── types/                   # Shared TypeScript domain contracts
+├── extension/                       # Chrome MV3 job capture client
+│   ├── background.js                # Authenticated API bridge
+│   ├── content.js                   # Job-page extraction fallback
+│   └── popup.*                      # Connect, review, and save UI
 ├── docs/                            # Engineering and deployment documentation
 ├── compose.yaml                     # Local service orchestration
 ├── Dockerfile                       # Production API image

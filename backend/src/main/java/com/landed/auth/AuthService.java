@@ -25,7 +25,9 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class AuthService {
@@ -34,18 +36,22 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RestClient restClient;
-    private final String googleClientId;
+    private final Set<String> googleClientIds;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager, JwtService jwtService,
                        RestClient.Builder restClientBuilder,
-                       @Value("${app.google.client-id:}") String googleClientId) {
+                       @Value("${app.google.client-id:}") String googleClientId,
+                       @Value("${app.google.additional-client-ids:}") String additionalGoogleClientIds) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.restClient = restClientBuilder.build();
-        this.googleClientId = googleClientId;
+        this.googleClientIds = Stream.concat(Stream.of(googleClientId), Stream.of(additionalGoogleClientIds.split(",")))
+                .map(String::trim)
+                .filter(clientId -> !clientId.isBlank())
+                .collect(java.util.stream.Collectors.toUnmodifiableSet());
     }
 
     @Transactional
@@ -76,12 +82,12 @@ public class AuthService {
 
     @Transactional
     public AuthResponse google(GoogleAuthRequest request) {
-        if (googleClientId == null || googleClientId.isBlank()) {
+        if (googleClientIds.isEmpty()) {
             throw new BadRequestException("Google sign-in is not configured");
         }
 
         GoogleTokenInfo tokenInfo = verifyGoogleCredential(request.credential());
-        if (!googleClientId.equals(tokenInfo.audience())) {
+        if (!googleClientIds.contains(tokenInfo.audience())) {
             throw new BadRequestException("Google sign-in credential is for a different app");
         }
         if (!Boolean.TRUE.equals(tokenInfo.emailVerified())) {

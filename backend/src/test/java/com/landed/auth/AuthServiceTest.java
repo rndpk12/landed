@@ -32,7 +32,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         authService = new AuthService(
-                userRepository, passwordEncoder, authenticationManager, jwtService, RestClient.builder(), "google-client-id");
+                userRepository, passwordEncoder, authenticationManager, jwtService, RestClient.builder(), "google-client-id", "");
     }
 
     @Test

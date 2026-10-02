@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Landed — Save Job Applications",
+  "description": "Import the job you are viewing and save it to your Landed application tracker.",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "Save to Landed",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["activeTab", "storage", "scripting", "tabs", "identity"],
+  "oauth2": {
+    "client_id": "653621611485-mc1d8na8jap0s8n9qsc1emqdttnitph1.apps.googleusercontent.com",
+    "scopes": ["openid", "email", "profile"]
+  },
+  "host_permissions": [
+    "https://*.linkedin.com/*",
+    "https://*.greenhouse.io/*",
+    "https://*.lever.co/*",
+    "https://*.workday.com/*",
+    "https://*.ashbyhq.com/*",
+    "https://*.naukri.com/*"
+  ],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.linkedin.com/*",
+        "https://*.greenhouse.io/*",
+        "https://*.lever.co/*",
+        "https://*.workday.com/*",
+        "https://*.ashbyhq.com/*",
+        "https://*.naukri.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

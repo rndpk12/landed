@@ -139,6 +139,12 @@ Landed/
 │   ├── package.json
 │   └── vite.config.ts
 │
+├── extension/                       # Chrome Manifest V3 job-capture extension
+│   ├── manifest.json
+│   ├── popup.html
+│   ├── popup.js
+│   └── README.md
+│
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   └── DEPLOYMENT.md
@@ -311,6 +317,10 @@ docs/DEPLOYMENT.md
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full domain map and code-placement rules.
+
+## Browser Extension
+
+The `extension/` workspace lets a user import the active job-posting page and save it to their Landed pipeline. See [extension/README.md](extension/README.md) for local installation, supported job sources, and security setup.
 
 ## Project Status
 
