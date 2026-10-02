@@ -1,17 +1,17 @@
 import type { ApplicationStatus } from '../types/application';
 
 const statusStyles: Record<ApplicationStatus, string> = {
-  Saved: 'bg-slate-100 text-slate-700 ring-slate-200',
-  Applied: 'bg-blue-50 text-blue-700 ring-blue-200',
-  OA: 'bg-violet-50 text-violet-700 ring-violet-200',
-  Interview: 'bg-amber-50 text-amber-700 ring-amber-200',
-  Offer: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  Rejected: 'bg-rose-50 text-rose-700 ring-rose-200',
-  Accepted: 'bg-green-50 text-green-700 ring-green-200'
+  Saved: 'bg-[#f8efe2] text-black',
+  Applied: 'bg-[#f9d44a] text-black',
+  OA: 'bg-[#5dd6e4] text-black',
+  Interview: 'bg-[#f97316] text-white',
+  Offer: 'bg-[#b7ef8c] text-black',
+  Rejected: 'bg-[#fee2e2] text-[#991b1b]',
+  Accepted: 'bg-black text-white'
 };
 
 export const StatusBadge = ({ status }: { status: ApplicationStatus }) => (
-  <span className={'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ' + statusStyles[status]}>
+  <span className={'inline-flex items-center border-2 border-black px-2.5 py-1 text-[11px] font-black uppercase ' + statusStyles[status]}>
     {status}
   </span>
 );

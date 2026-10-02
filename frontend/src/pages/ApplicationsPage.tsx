@@ -181,37 +181,38 @@ export const ApplicationsPage = () => {
   }
 
   return (
-    <div className="page-shell">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="page-shell gap-6 pb-10 pt-7">
+      <div className="flex flex-col gap-5 border-b-[3px] border-black pb-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-950">Applications</h2>
-          <p className="mt-1 text-sm text-slate-500">Search, filter, and manage every active opportunity.</p>
+          <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#f97316]">Your job-search command center</p>
+          <h2 className="mt-1 text-[clamp(30px,3vw,42px)] font-black uppercase leading-none tracking-[-0.045em] text-black">Applications</h2>
+          <p className="mt-3 text-sm font-bold text-[#555]">Search, filter, and manage every active opportunity.</p>
         </div>
         <div className="flex flex-wrap gap-3">
-          <button className="btn-secondary" type="button" onClick={() => setImportModalOpen(true)}>
+          <button className="inline-flex items-center justify-center gap-2 border-[3px] border-black bg-white px-4 py-2.5 text-[12px] font-black uppercase text-black shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 hover:bg-[#f9d44a]" type="button" onClick={() => setImportModalOpen(true)}>
             <Link className="h-4 w-4" />
             Import from Job URL
           </button>
-          <button className="btn-primary" type="button" onClick={openCreateModal}>
+          <button className="inline-flex items-center justify-center gap-2 border-[3px] border-black bg-[#f97316] px-4 py-2.5 text-[12px] font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000]" type="button" onClick={openCreateModal}>
             <Plus className="h-4 w-4" />
             Add Application
           </button>
         </div>
       </div>
       {mutationError ? (
-        <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div className="border-[3px] border-[#dc2626] bg-[#fee2e2] px-4 py-3 text-sm font-bold text-[#991b1b] shadow-[4px_4px_0_#dc2626]">
           {mutationError.message}
         </div>
       ) : null}
-      <section className="card p-4">
+      <section className="border-[3px] border-black bg-white p-4 shadow-[5px_5px_0_#000]">
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-          <div className="flex max-w-md items-center gap-2 rounded-xl border border-slate-200 px-3 py-2">
-            <Search className="h-4 w-4 text-slate-400" />
-            <input className="w-full text-sm outline-none" placeholder="Search company, role, resume..." value={query} onChange={(event) => setQuery(event.target.value)} />
+          <div className="flex max-w-md items-center gap-2 border-[3px] border-black bg-[#fffaf1] px-3 py-2.5 shadow-[3px_3px_0_#000]">
+            <Search className="h-4 w-4 text-black" />
+            <input className="w-full bg-transparent text-sm font-bold text-black outline-none placeholder:text-[#777]" placeholder="Search company, role, resume..." value={query} onChange={(event) => setQuery(event.target.value)} />
           </div>
           <div className="flex flex-wrap gap-2">
             {statuses.map((item) => (
-              <button key={item} className={'rounded-full px-3 py-1.5 text-sm font-semibold transition ' + (status === item ? 'bg-primary-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200')} type="button" onClick={() => setStatus(item)}>
+              <button key={item} className={'border-2 border-black px-3 py-1.5 text-[11px] font-black uppercase transition hover:-translate-y-0.5 ' + (status === item ? 'bg-[#f97316] text-white shadow-[3px_3px_0_#000]' : 'bg-[#f8efe2] text-black hover:bg-[#f9d44a]')} type="button" onClick={() => setStatus(item)}>
                 {item}
               </button>
             ))}
