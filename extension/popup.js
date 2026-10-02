@@ -4,6 +4,16 @@ const jobView = byId('job-view');
 const message = byId('message');
 const apiUrlInput = byId('api-url');
 let activeJob = null;
+const DEFAULT_API_URL = 'https://landed-backend-nkxx.onrender.com/api/v1';
+
+const isLocalApi = (apiUrl) => {
+  try {
+    const { hostname } = new URL(apiUrl);
+    return hostname === 'localhost' || hostname === '127.0.0.1';
+  } catch {
+    return false;
+  }
+};
 
 const send = (messagePayload) => new Promise((resolve) => {
   chrome.runtime.sendMessage(messagePayload, (response) => resolve(response));
@@ -144,7 +154,7 @@ byId('logout').addEventListener('click', async () => {
 
 const initialise = async () => {
   const { landedApiUrl, landedToken } = await chrome.storage.local.get(['landedApiUrl', 'landedToken']);
-  apiUrlInput.value = landedApiUrl || 'http://localhost:8080/api/v1';
+  apiUrlInput.value = landedApiUrl && !isLocalApi(landedApiUrl) ? landedApiUrl : DEFAULT_API_URL;
   if (landedToken) await showJob();
   else showLogin();
 };

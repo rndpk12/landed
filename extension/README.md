@@ -8,7 +8,9 @@ The Chrome extension imports the active job-posting URL, lets the user review ex
 2. In Chrome, open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select this `extension` folder.
 4. Copy the extension ID shown by Chrome and add `chrome-extension://<extension-id>` to `CORS_ALLOWED_ORIGINS` alongside the web app origin. Restart the API after changing it.
-5. Open the extension on a supported job page, enter the API URL and your Landed email/password, then choose **Read job page** and **Save to Landed**.
+5. Open the extension on a supported job page. The API URL defaults to the production Landed API; sign in with your Landed email/password (or Google), then choose **Read job page** and **Save to Landed**.
+
+For local development, replace the API URL with `http://localhost:8080/api/v1` before signing in.
 
 For local development, use `http://localhost:8080/api/v1`. For production, enter the public API base URL ending in `/api/v1`.
 
