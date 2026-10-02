@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useGoogleLogin } from '@react-oauth/google';
 import { ArrowRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, type FieldError, type UseFormRegisterReturn } from 'react-hook-form';
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
@@ -309,21 +309,40 @@ const GoogleAuthControl = ({
   onError: (message: string | null) => void;
 }) => {
   const [pending, setPending] = useState(false);
+  const loginTimeout = useRef<number | null>(null);
+
+  const finishGoogleLogin = () => {
+    if (loginTimeout.current !== null) {
+      window.clearTimeout(loginTimeout.current);
+      loginTimeout.current = null;
+    }
+    setPending(false);
+  };
+
+  useEffect(
+    () => () => {
+      if (loginTimeout.current !== null) {
+        window.clearTimeout(loginTimeout.current);
+      }
+    },
+    []
+  );
+
   const googleLogin = useGoogleLogin({
     scope: 'openid profile email',
     onSuccess: async (tokenResponse) => {
       try {
         await onCredential(tokenResponse.access_token);
       } finally {
-        setPending(false);
+        finishGoogleLogin();
       }
     },
     onError: () => {
-      setPending(false);
+      finishGoogleLogin();
       onError('Google sign-in was not completed. Please try again.');
     },
     onNonOAuthError: (error) => {
-      setPending(false);
+      finishGoogleLogin();
       if (error.type !== 'popup_closed') {
         onError('Could not open Google sign-in. Check your popup settings and try again.');
       }
@@ -333,7 +352,18 @@ const GoogleAuthControl = ({
   const startGoogleLogin = () => {
     onError(null);
     setPending(true);
-    googleLogin();
+    loginTimeout.current = window.setTimeout(() => {
+      loginTimeout.current = null;
+      setPending(false);
+      onError('Google sign-in timed out. Please allow popups and try again.');
+    }, 20_000);
+
+    try {
+      googleLogin();
+    } catch {
+      finishGoogleLogin();
+      onError('Could not open Google sign-in. Check your popup settings and try again.');
+    }
   };
 
   return (
