@@ -139,12 +139,13 @@ Landed/
 │   ├── package.json
 │   └── vite.config.ts
 │
-├── .github/
-├── .vscode/
+├── docs/
+│   ├── ARCHITECTURE.md
+│   └── DEPLOYMENT.md
+├── CONTRIBUTING.md
 ├── Dockerfile
 ├── compose.yaml
 ├── .env.example
-├── DEPLOYMENT.md
 └── README.md
 ```
 
@@ -306,8 +307,10 @@ The frontend is configured for Vercel deployment.
 Backend and production configuration details are documented in:
 
 ```text
-DEPLOYMENT.md
+docs/DEPLOYMENT.md
 ```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full domain map and code-placement rules.
 
 ## Project Status
 
