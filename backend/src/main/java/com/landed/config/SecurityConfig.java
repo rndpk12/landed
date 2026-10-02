@@ -71,12 +71,19 @@ public class SecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource(
-            @Value("${app.cors.allowed-origins}") String allowedOrigins) {
+            @Value("${app.cors.allowed-origins}") String allowedOrigins,
+            @Value("${app.cors.allowed-extension-ids:}") String allowedExtensionIds) {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
                 .filter(origin -> !origin.isBlank())
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        Arrays.stream(allowedExtensionIds.split(","))
+                .map(String::trim)
+                .filter(id -> !id.isBlank())
+                .map(id -> "chrome-extension://" + id)
+                .forEach(origins::add);
+        configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
         configuration.setExposedHeaders(List.of("Location", "Retry-After", "X-RateLimit-Limit",

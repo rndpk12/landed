@@ -52,6 +52,7 @@ app:
     additional-client-ids: ${GOOGLE_ADDITIONAL_CLIENT_IDS:}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+    allowed-extension-ids: ${CORS_ALLOWED_EXTENSION_IDS:iofhbdjplmhcommmdjcpiacjnngcbfaf}
   storage:
     type: ${RESUME_STORAGE_TYPE:local}
     resume-directory: ${RESUME_STORAGE_PATH:./data/resumes}
