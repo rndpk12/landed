@@ -16,7 +16,10 @@ const isLocalApi = (apiUrl) => {
 };
 
 const send = (messagePayload) => new Promise((resolve) => {
-  chrome.runtime.sendMessage(messagePayload, (response) => resolve(response));
+  chrome.runtime.sendMessage(messagePayload, (response) => {
+    const error = chrome.runtime.lastError;
+    resolve(error ? { ok: false, error: 'The Landed extension background service is unavailable. Reload the extension and try again.' } : response);
+  });
 });
 
 const showMessage = (text) => { message.textContent = text; };
@@ -110,7 +113,14 @@ byId('import-job').addEventListener('click', async () => {
     return showMessage('Job details imported. Review them, then save.');
   }
 
-  const pageJob = await new Promise((resolve) => chrome.tabs.sendMessage(tab.id, { type: 'EXTRACT_JOB' }, resolve));
+  const pageJob = await new Promise((resolve) => {
+    chrome.tabs.sendMessage(tab.id, { type: 'EXTRACT_JOB' }, (response) => {
+      // Unsupported pages do not have the content script; consume the
+      // expected Chrome error and let the URL importer message be shown.
+      void chrome.runtime.lastError;
+      resolve(response);
+    });
+  });
   if (pageJob) {
     activeJob = { ...activeJob, ...pageJob };
     setForm(pageJob);
