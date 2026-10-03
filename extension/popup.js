@@ -5,11 +5,28 @@ const message = byId('message');
 const apiUrlInput = byId('api-url');
 let activeJob = null;
 const DEFAULT_API_URL = 'https://landed-backend-nkxx.onrender.com/api/v1';
+const CONTENT_SCRIPT_HOSTS = [
+  'linkedin.com',
+  'greenhouse.io',
+  'lever.co',
+  'workday.com',
+  'ashbyhq.com',
+  'naukri.com'
+];
 
 const isLocalApi = (apiUrl) => {
   try {
     const { hostname } = new URL(apiUrl);
     return hostname === 'localhost' || hostname === '127.0.0.1';
+  } catch {
+    return false;
+  }
+};
+
+const supportsPageExtraction = (pageUrl) => {
+  try {
+    const hostname = new URL(pageUrl).hostname.toLowerCase();
+    return CONTENT_SCRIPT_HOSTS.some((host) => hostname === host || hostname.endsWith(`.${host}`));
   } catch {
     return false;
   }
@@ -111,6 +128,10 @@ byId('import-job').addEventListener('click', async () => {
   if (imported?.ok) {
     setForm(imported.data);
     return showMessage('Job details imported. Review them, then save.');
+  }
+
+  if (!supportsPageExtraction(tab.url)) {
+    return showMessage(imported?.error || 'This job site is not supported for page extraction yet.');
   }
 
   const pageJob = await new Promise((resolve) => {

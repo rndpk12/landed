@@ -6,7 +6,6 @@ import { useForm, type FieldError, type UseFormRegisterReturn } from 'react-hook
 import { Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
-import { authApi } from '../services/authApi';
 import { BrandLogo } from '../components/BrandLogo';
 
 const loginSchema = z.object({
@@ -71,8 +70,11 @@ export const LoginPage = () => {
   const hasGoogleClientId = Boolean(
     (import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined)?.trim()
   );
-  const [googleConfigured, setGoogleConfigured] = useState(false);
-  const [googleConfigChecked, setGoogleConfigChecked] = useState(!hasGoogleClientId);
+  // Google OAuth is loaded with the build-time client ID. The API validates
+  // the returned credential, so a second configuration probe here can only
+  // create a false “unavailable” state when a request is delayed or cached.
+  const googleConfigured = hasGoogleClientId;
+  const googleConfigChecked = true;
 
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -87,29 +89,6 @@ export const LoginPage = () => {
   useEffect(() => {
     setMode(searchParams.get('mode') === 'register' ? 'register' : 'login');
   }, [searchParams]);
-
-  useEffect(() => {
-    let active = true;
-
-    if (!hasGoogleClientId) {
-      setGoogleConfigured(false);
-      setGoogleConfigChecked(true);
-      return () => {
-        active = false;
-      };
-    }
-
-    setGoogleConfigChecked(false);
-    void authApi.isGoogleSignInConfigured().then((configured) => {
-      if (!active) return;
-      setGoogleConfigured(configured);
-      setGoogleConfigChecked(true);
-    });
-
-    return () => {
-      active = false;
-    };
-  }, [hasGoogleClientId]);
 
   const onLoginSubmit = async (values: LoginValues) => {
     setAuthError(null);
