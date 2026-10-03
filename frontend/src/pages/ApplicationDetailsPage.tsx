@@ -16,23 +16,25 @@ export const ApplicationDetailsPage = () => {
 
   if (!application) {
     return (
-      <div className="page-shell">
-        <div className="card p-8">
-          <h2 className="text-xl font-bold text-slate-950">Application not found</h2>
-          <Link className="mt-4 inline-flex text-sm font-semibold text-primary-600" to="/applications">Back to applications</Link>
+      <div className="page-shell py-10">
+        <div className="border-4 border-black bg-white p-8 shadow-[8px_8px_0_#000]">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f97316]">Missing application</p>
+          <h2 className="mt-2 text-2xl font-black uppercase text-black">Application not found</h2>
+          <Link className="mt-6 inline-flex border-2 border-black bg-[#f97316] px-4 py-2 text-sm font-black uppercase text-white shadow-[3px_3px_0_#000]" to="/applications">← Back to applications</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="page-shell">
-      <Link className="text-sm font-semibold text-primary-600" to="/applications">← Back to applications</Link>
-      <section className="card p-6">
+    <div className="page-shell space-y-8 py-8 sm:py-10">
+      <Link className="inline-flex border-b-2 border-[#f97316] text-sm font-black uppercase text-black transition hover:-translate-x-0.5" to="/applications">← Back to applications</Link>
+      <section className="border-4 border-black bg-white p-5 shadow-[9px_9px_0_#000] sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight text-slate-950">{application.company}</h2>
-            <p className="mt-2 text-lg text-slate-600">{application.role}</p>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#f97316]">Application record</p>
+            <h2 className="mt-2 break-words text-3xl font-black tracking-tight text-black sm:text-4xl">{application.company}</h2>
+            <p className="mt-2 text-lg font-bold text-[#64748b]">{application.role}</p>
           </div>
           <StatusBadge status={application.status} />
         </div>
@@ -42,20 +44,23 @@ export const ApplicationDetailsPage = () => {
           <Info label="Status" value={application.status} />
           <Info label="Job URL" value={application.jobUrl ? <a className="inline-flex items-center gap-1 text-primary-600" href={application.jobUrl} target="_blank" rel="noreferrer">Open <ExternalLink className="h-3 w-3" /></a> : 'Not added'} />
         </div>
-        <div className="mt-8 rounded-2xl bg-slate-50 p-5">
-          <p className="text-sm font-semibold text-slate-700">Notes</p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{application.notes ?? 'No notes yet.'}</p>
+        <div className="mt-8 border-2 border-black bg-[#fffaf1] p-5">
+          <p className="border-l-4 border-[#f97316] pl-3 text-xs font-black uppercase tracking-[0.15em] text-black">Notes</p>
+          <p className="mt-3 whitespace-pre-wrap text-sm font-semibold leading-6 text-[#475569]">{application.notes ?? 'No notes yet.'}</p>
         </div>
       </section>
-      <section className="card p-6">
-        <h3 className="text-lg font-semibold text-slate-950">Timeline</h3>
+      <section className="border-4 border-black bg-white p-5 shadow-[9px_9px_0_#000] sm:p-8">
+        <div className="flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center border-2 border-black bg-[#f97316] text-lg font-black text-white">↗</span>
+          <h3 className="text-xl font-black uppercase text-black">Timeline</h3>
+        </div>
         <div className="mt-5 space-y-4">
           {application.timeline.map((event) => (
-            <div key={event.id} className="flex gap-4 rounded-2xl border border-slate-200 p-4">
-              <div className="mt-1 h-3 w-3 rounded-full bg-primary-600 ring-4 ring-primary-50" />
+            <div key={event.id} className="flex gap-4 border-2 border-black bg-[#fffaf1] p-4">
+              <div className="mt-1 h-4 w-4 shrink-0 border-2 border-black bg-[#5dd6e4]" />
               <div>
-                <p className="font-semibold text-slate-950">{event.label}</p>
-                <p className="text-sm text-slate-500">{event.timestamp}</p>
+                <p className="font-black text-black">{event.label}</p>
+                <p className="mt-1 text-sm font-semibold text-[#64748b]">{event.timestamp}</p>
               </div>
             </div>
           ))}
@@ -66,8 +71,8 @@ export const ApplicationDetailsPage = () => {
 };
 
 const Info = ({ label, value }: { label: string; value: ReactNode }) => (
-  <div className="rounded-2xl border border-slate-200 p-4">
-    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-    <div className="mt-2 text-sm font-semibold text-slate-950">{value}</div>
+  <div className="border-2 border-black bg-[#fffaf1] p-4">
+    <p className="text-xs font-black uppercase tracking-[0.12em] text-[#64748b]">{label}</p>
+    <div className="mt-2 text-sm font-black text-black">{value}</div>
   </div>
 );

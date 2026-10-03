@@ -1,4 +1,5 @@
 const storage = chrome.storage.local;
+const PRODUCTION_DASHBOARD_URL = 'https://getlanded.vercel.app/dashboard';
 
 const normaliseApiUrl = (apiUrl) => apiUrl.trim().replace(/\/$/, '');
 
@@ -55,7 +56,12 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         body: { credential: accessToken }
       });
       await storage.set({ landedApiUrl: normaliseApiUrl(message.apiUrl), landedToken: auth.token, landedUser: auth.user });
-      return { user: auth.user };
+      return {
+        user: auth.user,
+        // The fragment is never sent to the web server. The dashboard imports
+        // it into session storage immediately, then removes it from the URL.
+        dashboardUrl: `${PRODUCTION_DASHBOARD_URL}#landed_token=${encodeURIComponent(auth.token)}`
+      };
     }
 
     if (message.type === 'LOGOUT') {

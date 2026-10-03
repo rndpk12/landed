@@ -7,6 +7,21 @@ import type { User } from '../types/user';
 
 const hasStoredToken = () => Boolean(sessionStorage.getItem(TOKEN_KEY));
 
+const importExtensionSession = () => {
+  if (typeof window === 'undefined') return;
+
+  const params = new URLSearchParams(window.location.hash.slice(1));
+  const token = params.get('landed_token');
+  if (!token) return;
+
+  // The browser extension passes the Landed JWT in the URL fragment, which is
+  // not included in requests to Vercel. Remove it before the app renders.
+  sessionStorage.setItem(TOKEN_KEY, token);
+  window.history.replaceState(null, document.title, window.location.pathname + window.location.search);
+};
+
+importExtensionSession();
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(hasStoredToken);

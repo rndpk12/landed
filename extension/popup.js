@@ -109,8 +109,9 @@ byId('google-login').addEventListener('click', async () => {
     if (!allowed) throw new Error('Allow access to your Landed API to connect the extension.');
     const response = await send({ type: 'GOOGLE_LOGIN', apiUrl });
     if (!response?.ok) throw new Error(response?.error || 'Could not sign in with Google.');
-    showMessage(`Connected as ${response.data.user.name}.`);
-    await showJob();
+    if (!response.data.dashboardUrl) throw new Error('Could not open your Landed dashboard.');
+    await chrome.tabs.create({ url: response.data.dashboardUrl });
+    window.close();
   } catch (error) {
     showMessage(error.message.includes('client_id')
       ? 'Add the Chrome extension Google client ID in manifest.json, then reload the extension.'
@@ -186,6 +187,17 @@ byId('logout').addEventListener('click', async () => {
 const initialise = async () => {
   const { landedApiUrl, landedToken } = await chrome.storage.local.get(['landedApiUrl', 'landedToken']);
   apiUrlInput.value = landedApiUrl && !isLocalApi(landedApiUrl) ? landedApiUrl : DEFAULT_API_URL;
+
+  // A token issued by the local API cannot authenticate against production.
+  // Clear the legacy connection rather than displaying the production URL
+  // while background requests still use the stored localhost value.
+  if (landedApiUrl && isLocalApi(landedApiUrl)) {
+    await chrome.storage.local.remove(['landedApiUrl', 'landedToken', 'landedUser']);
+    showLogin();
+    showMessage('Production API selected. Sign in again to save jobs to your live Landed account.');
+    return;
+  }
+
   if (landedToken) await showJob();
   else showLogin();
 };
