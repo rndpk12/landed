@@ -1,348 +1,177 @@
 # Landed
 
-A full-stack career management platform for tracking job applications, managing resumes, preparing for interviews, and analyzing the job search.
+**A focused job-search command center for applications, resumes, interview notes, and job capture.**
 
-## Overview
+[Live app](https://getlanded.vercel.app) · [Architecture](docs/ARCHITECTURE.md) · [Deployment](docs/DEPLOYMENT.md) · [Chrome extension](extension/README.md)
 
-Landed is a full-stack SaaS application that centralizes the job-search workflow into a single workspace.
+## Why Landed
 
-It provides tools for managing job applications, resumes, job imports, interview notes, resume matching, and job-search analytics.
+Job searches become difficult to manage when job links, resume versions, interview notes, and follow-ups live in separate places. Landed brings that work into one structured workspace so users can track each application from discovery to offer.
 
-## Features
+## What it does
 
-### Authentication
-
-- Email/password registration and login
-- BCrypt password hashing
-- JWT-based authentication
-- Google OAuth support
-- User-scoped data access
-
-### Application Tracking
-
-- Create, view, update, and delete job applications
-- Track application stages and statuses
-- Application notes and activity history
-- Stage transition tracking
-
-### Resume Management
-
-- Resume upload and management
-- Resume versioning
-- Resume text extraction
-- Resume performance analysis
-- Local and AWS S3 storage support
-
-### Resume Matching
-
-- Compare resumes against job descriptions
-- Analyze resume-job relevance
-- Support targeted resume optimization
-
-### Job Import
-
-- Import job postings from supported platforms
-- Detect job source
-- Extract structured job information
-
-### Interview Management
-
-- Create and manage interview notes
-- Organize interview information by application
-
-### Analytics
-
-- Application activity tracking
-- Job-search performance metrics
-- Resume performance insights
-- Visual analytics dashboard
-
-## Tech Stack
-
-### Frontend
-
-- React 19
-- TypeScript
-- Vite
-- React Router
-- TanStack Query
-- Axios
-- React Hook Form
-- Zod
-- Recharts
-- Tailwind CSS
-- Lucide React
-
-### Backend
-
-- Java 21
-- Spring Boot 3.4
-- Spring Security
-- Spring Data JPA
-- PostgreSQL
-- Flyway
-- JWT
-- OpenAPI / Swagger
-- AWS SDK for S3
-- Apache PDFBox
-- Apache POI
-- Jsoup
-
-### Infrastructure
-
-- Docker
-- Docker Compose
-- PostgreSQL
-- Vercel
+- Secure email/password and Google sign-in with user-scoped data.
+- Application pipeline with stages, notes, and activity history.
+- Resume vault with uploads, versioning, text extraction, comparison, and performance insights.
+- Resume-to-job matching to help tailor applications.
+- Job URL import and a Chrome extension for capturing listings from supported job sites.
+- Interview notes, job-search analytics, and a responsive dashboard.
 
 ## Architecture
 
 ```text
-                         Landed
-                            |
-              +-------------+-------------+
-              |                           |
-          Frontend                     Backend
-       React + TypeScript          Spring Boot REST API
-              |                           |
-              +-------------+-------------+
-                            |
-                        PostgreSQL
-                            |
-                      Resume Storage
-                       Local / S3
-````
-
-## Project Structure
-
-### Workspace guide
-
-| Folder | Purpose | Start here |
-| --- | --- | --- |
-| [`frontend/`](frontend/README.md) | React web application deployed to Vercel | `frontend/src/main.tsx` |
-| [`backend/`](backend/README.md) | Spring Boot API deployed to Render | `backend/src/main/java/com/landed/LandedApplication.java` |
-| [`extension/`](extension/README.md) | Chrome extension for saving job listings | `extension/manifest.json` |
-| [`docs/`](docs/README.md) | Architecture and deployment guides | `docs/ARCHITECTURE.md` |
-
-The root layout stays intentionally stable: Vercel, Render, Docker Compose, and Chrome's **Load unpacked** command already use these folders.
-
-```text
-Landed/
-├── backend/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   └── resources/
-│   │   └── test/
-│   └── pom.xml
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── context/
-│   │   ├── hooks/
-│   │   ├── layout/
-│   │   ├── lib/
-│   │   ├── pages/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   └── types/
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── extension/                       # Chrome Manifest V3 job-capture extension
-│   ├── manifest.json
-│   ├── popup.html
-│   ├── popup.js
-│   └── README.md
-│
-├── docs/
-│   ├── ARCHITECTURE.md
-│   └── DEPLOYMENT.md
-├── CONTRIBUTING.md
-├── Dockerfile
-├── compose.yaml
-├── .env.example
-└── README.md
+Browser / Chrome extension
+           │
+           ▼
+  React + TypeScript web app
+        Vercel hosting
+           │ HTTPS + JWT
+           ▼
+ Spring Boot REST API
+       Render hosting
+           │
+           ├── PostgreSQL + Flyway migrations
+           └── Resume storage (local or S3-compatible)
 ```
 
-## Getting Started
+## Tech stack
+
+| Area | Technologies |
+| --- | --- |
+| Web | React 19, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query |
+| API | Java 21, Spring Boot 3.4, Spring Security, Spring Data JPA |
+| Data | PostgreSQL, Flyway, JWT, BCrypt |
+| Integrations | Google OAuth, Chrome Manifest V3, AWS S3-compatible storage |
+| Tooling | Docker Compose, Maven, npm, Vercel, Render |
+
+## Repository guide
+
+| Folder | Responsibility | Start here |
+| --- | --- | --- |
+| [`frontend/`](frontend/README.md) | React web app deployed to Vercel | `frontend/src/main.tsx` |
+| [`backend/`](backend/README.md) | Spring Boot API deployed to Render | `backend/src/main/java/com/landed/LandedApplication.java` |
+| [`extension/`](extension/README.md) | Chrome extension for saving job listings | `extension/manifest.json` |
+| [`docs/`](docs/README.md) | Architecture, operations, and deployment guidance | `docs/ARCHITECTURE.md` |
+
+## Quick start
 
 ### Prerequisites
 
-* Java 21
-* Maven 3.9+
-* Node.js
-* npm
-* Docker Desktop
-* Docker Compose
+- Java 21 and Maven 3.9+
+- Node.js 20+ and npm
+- Docker Desktop with Docker Compose
 
-### Clone the Repository
+### 1. Clone and configure
 
 ```bash
-git clone https://github.com/rndpk12/landed-backend.git
-cd landed-backend
-```
-
-### Configure Environment Variables
-
-```bash
+git clone https://github.com/rndpk12/landed.git
+cd landed
 cp .env.example .env
 ```
 
-Configure the required environment variables before starting the application.
+Update `.env` with local Google OAuth and JWT values. Keep it private—never commit it.
 
-Never commit `.env` or production credentials to the repository.
-
-## Running with Docker
-
-From the project root:
+### 2. Start the API and database
 
 ```bash
 docker compose up -d --build
-```
-
-Check the services:
-
-```bash
 docker compose ps
 ```
 
-The backend API will be available at:
-
-```text
-http://localhost:8080
-```
-
-Health check:
+The API is available at `http://localhost:8080`.
 
 ```bash
 curl http://localhost:8080/actuator/health
 ```
 
-Swagger UI:
+Expected response:
 
-```text
-http://localhost:8080/swagger-ui/index.html
+```json
+{"status":"UP"}
 ```
 
-Stop the services:
+Swagger UI is available at `http://localhost:8080/swagger-ui/index.html`.
 
-```bash
-docker compose down
-```
-
-## Running the Frontend
+### 3. Start the web app
 
 ```bash
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-The frontend will be available at:
+Open `http://localhost:3000`.
 
-```text
-http://localhost:3000
-```
+## Environment configuration
 
-### Production Build
+Copy `.env.example` to `.env` for local development. These are the main variables:
+
+| Variable | Used by | Purpose |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | Web app | Public API base URL ending in `/api/v1` |
+| `VITE_GOOGLE_CLIENT_ID` | Web app | Google OAuth web client ID |
+| `DB_URL` | Local API | JDBC PostgreSQL connection URL |
+| `DATABASE_URL` | Production API | PostgreSQL provider URL used in the production profile |
+| `JWT_SECRET` | API | Base64-encoded secret for signing session tokens |
+| `GOOGLE_CLIENT_ID` | API | Must match `VITE_GOOGLE_CLIENT_ID` |
+| `GOOGLE_ADDITIONAL_CLIENT_IDS` | API | Trusted non-web OAuth clients, including the extension |
+| `CORS_ALLOWED_ORIGINS` | API | Allowed HTTPS web origins |
+| `CORS_ALLOWED_EXTENSION_IDS` | API | Allowed Chrome extension IDs |
+
+`VITE_*` variables are built into the browser bundle. Only store public configuration in them—never passwords, database URLs, or private keys.
+
+## Chrome extension
+
+The extension captures job details from the active job page, lets the user review them, and saves the application into the same Landed account.
+
+1. Start the API or use the production API.
+2. Open `chrome://extensions` and enable **Developer mode**.
+3. Select **Load unpacked** and choose the repository's `extension/` folder.
+4. Sign in, select **Read Job Page**, then choose **Save to Landed**.
+
+See the [extension guide](extension/README.md) for OAuth setup, supported sites, and security details.
+
+## Quality checks
+
+Run these checks before opening a pull request or deploying:
 
 ```bash
-npm run build
+cd frontend && npm run lint && npm run build
+cd ../backend && mvn test
 ```
 
-### Lint
+## Production deployment
 
-```bash
-npm run lint
-```
+Landed is deployed with Vercel for the web app and Render for the API. The production API requires a managed PostgreSQL `DATABASE_URL`, `JWT_SECRET`, and HTTPS CORS configuration.
 
-## Running Backend Tests
+Before releasing, confirm:
 
-```bash
-cd backend
-mvn test
-```
+- Vercel `VITE_API_BASE_URL` points to the live Render API.
+- Vercel and Render use the same web Google OAuth client ID.
+- Render allows the Vercel origin and the Chrome extension ID.
+- `GET /actuator/health` returns `UP`.
+- Resume uploads use durable object storage before inviting users to store important files.
 
-Build the backend:
+See [deployment guidance](docs/DEPLOYMENT.md) for the detailed release checklist.
 
-```bash
-mvn clean package
-```
+## Documentation
 
-## API
+- [Architecture](docs/ARCHITECTURE.md): domain boundaries and code-placement rules.
+- [Deployment](docs/DEPLOYMENT.md): environment variables and release process.
+- [Contributing](CONTRIBUTING.md): engineering workflow and conventions.
 
-The backend exposes REST APIs for:
+## Security notes
 
-* Authentication
-* User profiles
-* Applications
-* Resumes
-* Resume matching
-* Resume performance
-* Job imports
-* Interview notes
-* Activities
+- Passwords are hashed with BCrypt.
+- API access uses JWT bearer tokens.
+- Data access is scoped to the authenticated user.
+- Database migrations are versioned with Flyway.
+- Secrets are stored in local environment files or hosting-provider environment settings, never Git.
 
-Authenticated requests use JWT bearer authentication:
+## Status
 
-```http
-Authorization: Bearer <token>
-```
-
-## Database
-
-PostgreSQL is used for persistent application data.
-
-Database schema changes are managed using Flyway migrations:
-
-```text
-backend/src/main/resources/db/migration/
-```
-
-## Security
-
-The application implements:
-
-* Spring Security
-* JWT authentication
-* BCrypt password hashing
-* User ownership checks
-* API rate limiting
-* Request validation
-* CORS configuration
-* Centralized API error handling
-* Environment-based secret management
-
-Production credentials and secrets should be managed through secure environment variables or the deployment platform's secret-management system.
-
-## Deployment
-
-The frontend is configured for Vercel deployment.
-
-Backend and production configuration details are documented in:
-
-```text
-docs/DEPLOYMENT.md
-```
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full domain map and code-placement rules.
-
-## Browser Extension
-
-The `extension/` workspace lets a user import the active job-posting page and save it to their Landed pipeline. See [extension/README.md](extension/README.md) for local installation, supported job sources, and security setup.
-
-## Project Status
-
-Landed is actively under development.
-
-The current implementation includes the core full-stack job-search workflow, authentication, application tracking, resume management, resume matching, job importing, interview notes, analytics, PostgreSQL persistence, Docker-based local infrastructure, and frontend deployment.
+Landed is actively being developed. The current release includes the core job-search workflow, Google authentication, application tracking, resume tooling, analytics, job import, and browser-based job capture.
 
 ## Author
 
-**R N Dhanapraveen Krishna**
-
-Software Engineering Student
-
-GitHub: [https://github.com/rndpk12](https://github.com/rndpk12)
+Built by [R N Dhanapraveen Krishna](https://github.com/rndpk12).
