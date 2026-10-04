@@ -2,6 +2,19 @@
 
 The Chrome extension imports the active job-posting URL, lets the user review extracted information, and saves the application to Landed.
 
+## Folder map
+
+```text
+extension/
+├── manifest.json       # Chrome MV3 permissions and extension configuration
+├── background.js       # Google sign-in, API bridge, and tab actions
+├── content.js          # Safe extraction from supported job pages
+├── popup.html          # Extension popup structure
+├── popup.css           # Landed popup styling
+├── popup.js            # Popup interaction and save flow
+└── landed-lockup.svg   # Extension brand asset
+```
+
 ## Install locally
 
 1. Build and start Landed's API.

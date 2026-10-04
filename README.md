@@ -115,6 +115,17 @@ It provides tools for managing job applications, resumes, job imports, interview
 
 ## Project Structure
 
+### Workspace guide
+
+| Folder | Purpose | Start here |
+| --- | --- | --- |
+| [`frontend/`](frontend/README.md) | React web application deployed to Vercel | `frontend/src/main.tsx` |
+| [`backend/`](backend/README.md) | Spring Boot API deployed to Render | `backend/src/main/java/com/landed/LandedApplication.java` |
+| [`extension/`](extension/README.md) | Chrome extension for saving job listings | `extension/manifest.json` |
+| [`docs/`](docs/README.md) | Architecture and deployment guides | `docs/ARCHITECTURE.md` |
+
+The root layout stays intentionally stable: Vercel, Render, Docker Compose, and Chrome's **Load unpacked** command already use these folders.
+
 ```text
 Landed/
 ├── backend/
