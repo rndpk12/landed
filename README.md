@@ -1,5 +1,7 @@
 # Landed
 
+[![Continuous Integration](https://github.com/rndpk12/landed/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rndpk12/landed/actions/workflows/ci.yml)
+
 **A focused job-search command center for applications, resumes, interview notes, and job capture.**
 
 [Live app](https://getlanded.vercel.app) · [Architecture](docs/ARCHITECTURE.md) · [Deployment](docs/DEPLOYMENT.md) · [Chrome extension](extension/README.md)
@@ -153,6 +155,15 @@ Before releasing, confirm:
 - Resume uploads use durable object storage before inviting users to store important files.
 
 See [deployment guidance](docs/DEPLOYMENT.md) for the detailed release checklist.
+
+## Delivery automation
+
+Every pull request and push to `main` runs the GitHub Actions CI workflow:
+
+- Frontend dependency installation, linting, and production build.
+- Backend Java setup and Maven test suite.
+
+Keep Vercel and Render connected to the repository's `main` branch so a successful merge is deployed automatically.
 
 ## Documentation
 

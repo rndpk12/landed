@@ -3,14 +3,14 @@
 This guide deploys Landed with:
 
 - Frontend: Vercel
-- Backend: Railway
+- Backend: Render
 - Database: Neon PostgreSQL
 
 ## Production Architecture
 
-The browser talks to the Railway API through `VITE_API_BASE_URL`.
-The Railway API talks to Neon through `DATABASE_URL`.
-JWT authentication is stateless, so the API can run as a single Railway web service without sticky sessions.
+The browser talks to the Render API through `VITE_API_BASE_URL`.
+The Render API talks to Neon through `DATABASE_URL`.
+JWT authentication is stateless, so the API can run as a single Render web service without sticky sessions.
 
 ## Required Environment Variables
 
@@ -18,10 +18,10 @@ JWT authentication is stateless, so the API can run as a single Railway web serv
 
 | Variable | Example |
 |---|---|
-| `VITE_API_BASE_URL` | `https://landed-api.up.railway.app/api/v1` |
+| `VITE_API_BASE_URL` | `https://landed-backend-nkxx.onrender.com/api/v1` |
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth web client ID |
 
-### Backend, Railway
+### Backend, Render
 
 | Variable | Example |
 |---|---|
@@ -29,7 +29,9 @@ JWT authentication is stateless, so the API can run as a single Railway web serv
 | `DATABASE_URL` | `postgresql://user:password@host.neon.tech/db?sslmode=require` |
 | `JWT_SECRET` | Base64 string from `openssl rand -base64 64` |
 | `GOOGLE_CLIENT_ID` | Same Google OAuth web client ID used by Vercel |
+| `GOOGLE_ADDITIONAL_CLIENT_IDS` | Chrome extension OAuth client ID |
 | `CORS_ALLOWED_ORIGINS` | `https://landed.vercel.app,https://www.yourdomain.com` |
+| `CORS_ALLOWED_EXTENSION_IDS` | Comma-separated Chrome extension IDs |
 
 Optional backend variables:
 
@@ -46,7 +48,7 @@ Optional backend variables:
 2. Create the production database, for example `landed`.
 3. Copy the pooled or direct PostgreSQL connection string.
 4. Keep `sslmode=require` in the connection string.
-5. Save the connection string as Railway `DATABASE_URL`.
+5. Save the connection string as Render `DATABASE_URL`.
 
 The backend accepts Neon-style URLs like:
 
@@ -56,13 +58,12 @@ postgresql://user:password@host.neon.tech/landed?sslmode=require
 
 At startup, Landed converts `DATABASE_URL` into the JDBC datasource settings Spring Boot needs.
 
-## Railway Setup
+## Render Setup
 
-1. Create a new Railway project.
-2. Add a service from the GitHub repository.
-3. Set the service root to the repository root.
-4. Railway will build the backend with the root `Dockerfile`.
-5. Add backend environment variables:
+1. Create a new Render Web Service from the GitHub repository.
+2. Set the service root to the repository root.
+3. Render builds the backend with the root `Dockerfile`.
+4. Add backend environment variables:
 
 ```text
 SPRING_PROFILES_ACTIVE=prod
@@ -70,10 +71,12 @@ DATABASE_URL=postgresql://...
 JWT_SECRET=<openssl rand -base64 64>
 GOOGLE_CLIENT_ID=your-google-oauth-web-client-id
 CORS_ALLOWED_ORIGINS=https://your-vercel-app.vercel.app
+CORS_ALLOWED_EXTENSION_IDS=your-chrome-extension-id
+GOOGLE_ADDITIONAL_CLIENT_IDS=your-chrome-extension-client-id.apps.googleusercontent.com
 ```
 
-6. Set the public service port to `8080` if Railway asks.
-7. Use this health check path:
+5. Render supplies `PORT`; use `8080` as the local default.
+6. Use this health check path:
 
 ```text
 /actuator/health
@@ -100,7 +103,7 @@ dist
 5. Add frontend environment variable:
 
 ```text
-VITE_API_BASE_URL=https://your-railway-api-domain/api/v1
+VITE_API_BASE_URL=https://your-render-api-domain/api/v1
 VITE_GOOGLE_CLIENT_ID=your-google-oauth-web-client-id
 ```
 
@@ -115,13 +118,13 @@ can verify credentials returned by the frontend.
 
 ### Backend Domain
 
-Use either the default Railway domain or a custom API domain such as:
+Use either the default Render domain or a custom API domain such as:
 
 ```text
 https://api.yourdomain.com
 ```
 
-If using a custom domain, add it in Railway and create the DNS record Railway provides.
+If using a custom domain, add it in Render and create the DNS record Render provides.
 
 ### Frontend Domain
 
@@ -135,10 +138,10 @@ If using a custom Vercel domain, add it in Vercel and create the DNS record Verc
 
 ### CORS
 
-Set Railway `CORS_ALLOWED_ORIGINS` to every HTTPS frontend origin that should call the API:
+Set Render `CORS_ALLOWED_ORIGINS` to every HTTPS frontend origin that should call the API:
 
 ```text
-CORS_ALLOWED_ORIGINS=https://landed.vercel.app,https://app.yourdomain.com
+CORS_ALLOWED_ORIGINS=https://getlanded.vercel.app,https://app.yourdomain.com
 ```
 
 Do not include paths, trailing slashes, wildcards, or localhost in production.
@@ -148,7 +151,7 @@ Do not include paths, trailing slashes, wildcards, or localhost in production.
 Backend:
 
 ```text
-GET https://your-railway-api-domain/actuator/health
+GET https://your-render-api-domain/actuator/health
 ```
 
 Expected response:
@@ -213,10 +216,11 @@ docker build -t landed-api:prod .
 ## Release Checklist
 
 1. Neon database exists and `DATABASE_URL` is copied.
-2. Railway backend env vars are set.
-3. Railway health check returns `UP`.
-4. Vercel `VITE_API_BASE_URL` points to Railway with `/api/v1`.
-5. Railway `CORS_ALLOWED_ORIGINS` includes the Vercel/custom frontend origin.
+2. Render backend environment variables are set.
+3. Render health check returns `UP`.
+4. Vercel `VITE_API_BASE_URL` points to Render with `/api/v1`.
+5. Render `CORS_ALLOWED_ORIGINS` includes the Vercel/custom frontend origin.
 6. Vercel deployment loads and login/register calls reach the API.
 7. Google sign-in appears only when both `VITE_GOOGLE_CLIENT_ID` and backend
    `GOOGLE_CLIENT_ID` are configured with the same value.
+8. The Chrome extension ID is present in `CORS_ALLOWED_EXTENSION_IDS` and its OAuth client ID is present in `GOOGLE_ADDITIONAL_CLIENT_IDS`.
