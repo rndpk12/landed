@@ -51,6 +51,7 @@ Browser / Chrome extension
 | Folder | Responsibility | Start here |
 | --- | --- | --- |
 | [`frontend/`](frontend/README.md) | React web app deployed to Vercel | `frontend/src/main.tsx` |
+| [`landed-lite/`](landed-lite/README.md) | Separate browser-first Lite app | `landed-lite/src/main.tsx` |
 | [`backend/`](backend/README.md) | Spring Boot API deployed to Render | `backend/src/main/java/com/landed/LandedApplication.java` |
 | [`extension/`](extension/README.md) | Chrome extension for saving job listings | `extension/manifest.json` |
 | [`docs/`](docs/README.md) | Architecture, operations, and deployment guidance | `docs/ARCHITECTURE.md` |

@@ -1,7 +1,7 @@
 import { ArrowRight, Link2, LoaderCircle } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { apiClient } from '../../lib/apiClient';
+import { apiClient } from '../lib/apiClient';
 import { formatCompanyName } from '../lib/format';
 import { liteStore } from '../lib/store';
 import type { LiteApplicationInput, LiteStatus } from '../types/application';
@@ -81,7 +81,7 @@ export const LiteImportPage = () => {
     event.preventDefault();
     if (!form.jobUrl.trim() || !form.company.trim() || !form.role.trim()) { setError('Job URL, company, and role are required.'); return; }
     liteStore.create(form);
-    navigate('/lite/applications');
+    navigate('/applications');
   };
   const highlights = form.description ? jobHighlights(form.description) : null;
 

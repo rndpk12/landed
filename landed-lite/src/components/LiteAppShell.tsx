@@ -1,21 +1,21 @@
 import { BriefcaseBusiness, LayoutDashboard, Link2, Settings2, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-import { BrandLogo } from '../../components/BrandLogo';
+import { BrandLogo } from './BrandLogo';
 
 const links = [
-  { to: '/lite/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/lite/import', label: 'Import URL', icon: Link2 },
-  { to: '/lite/applications', label: 'Applications', icon: BriefcaseBusiness },
-  { to: '/lite/ats', label: 'ATS Match', icon: Sparkles },
-  { to: '/lite/settings', label: 'Settings', icon: Settings2 }
+  { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/import', label: 'Import URL', icon: Link2 },
+  { to: '/applications', label: 'Applications', icon: BriefcaseBusiness },
+  { to: '/ats', label: 'ATS Match', icon: Sparkles },
+  { to: '/settings', label: 'Settings', icon: Settings2 }
 ];
 
 export const LiteAppShell = ({ children }: { children: ReactNode }) => (
   <div className="min-h-screen bg-[#fbf7ef] text-black">
     <header className="border-b-[3px] border-black bg-[#fffaf1] px-4 py-3 sm:px-6">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-        <NavLink aria-label="Landed Lite home" to="/lite"><BrandLogo className="h-8 w-auto sm:h-9" /></NavLink>
+        <NavLink aria-label="Landed Lite home" to="/"><BrandLogo className="h-8 w-auto sm:h-9" /></NavLink>
         <span className="border-2 border-black bg-[#5dd6e4] px-2 py-1 text-[10px] font-black uppercase">Lite · local only</span>
       </div>
     </header>

@@ -5,7 +5,7 @@ const message = byId('message');
 const apiUrlInput = byId('api-url');
 let activeJob = null;
 const DEFAULT_API_URL = 'https://landed-backend-nkxx.onrender.com/api/v1';
-const LOCAL_LITE_IMPORT_URL = 'http://localhost:3000/lite/import';
+const LOCAL_LITE_IMPORT_URL = 'http://localhost:3001/import';
 const CONTENT_SCRIPT_HOSTS = [
   'linkedin.com',
   'greenhouse.io',

@@ -21,13 +21,13 @@ extension/
 2. In Chrome, open `chrome://extensions` and enable **Developer mode**.
 3. Choose **Load unpacked** and select this `extension` folder.
 4. Copy the extension ID shown by Chrome and add `chrome-extension://<extension-id>` to `CORS_ALLOWED_ORIGINS` alongside the web app origin. Restart the API after changing it.
-5. Open the extension on a supported job page. For full Landed, sign in and choose **Read job page** and **Save to Landed**. For Lite, choose **Save to Landed Lite** without signing in. It opens `http://localhost:5173/lite/import` with the URL and any available page data pre-filled.
+5. Open the extension on a supported job page. For full Landed, sign in and choose **Read job page** and **Save to Landed**. For Lite, choose **Save to Landed Lite** without signing in. It opens `http://localhost:3001/import` with the URL and any available page data pre-filled.
 
 For local development, replace the API URL with `http://localhost:8080/api/v1` before signing in.
 
 ### Use Landed Lite locally
 
-Landed Lite does not use an account or database. Start the frontend, load the unpacked extension, visit a job post, and choose **Save to Landed Lite**. The extension opens `http://localhost:3000/lite/import`; review the fields and save the application in your browser. Direct URL auto-fill additionally uses the local API importer.
+Landed Lite does not use an account or database. Start `landed-lite`, load the unpacked extension, visit a job post, and choose **Save to Landed Lite**. The extension opens `http://localhost:3001/import`; review the fields and save the application in your browser. Direct URL auto-fill additionally uses the local API importer.
 
 For local development, use `http://localhost:8080/api/v1`. For production, enter the public API base URL ending in `/api/v1`.
 

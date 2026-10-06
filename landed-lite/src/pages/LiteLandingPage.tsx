@@ -1,6 +1,6 @@
 import { ArrowRight, Check, Chrome, Download, LockKeyhole, MousePointer2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { BrandLogo } from '../../components/BrandLogo';
+import { BrandLogo } from '../components/BrandLogo';
 
 const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -61,7 +61,7 @@ export const LiteLandingPage = () => (
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               className="inline-flex items-center gap-3 border-[3px] border-black bg-black px-6 py-4 text-sm font-black uppercase text-white no-underline shadow-[6px_6px_0_#f97316] transition hover:-translate-y-1 hover:shadow-[9px_9px_0_#f97316]"
-              to="/lite/app"
+              to="/app"
             >
               Start tracking free <ArrowRight className="h-5 w-5" />
             </Link>
@@ -171,7 +171,7 @@ export const LiteLandingPage = () => (
         <Chrome className="mx-auto h-10 w-10" strokeWidth={2.5} />
         <h2 className="mt-5 text-4xl font-black uppercase leading-none sm:text-6xl">Ready when you are.</h2>
         <p className="mx-auto mt-5 max-w-xl text-lg font-bold leading-8">Start your local application board now. Nothing to sign up for and nothing to wait on.</p>
-        <Link className="mt-8 inline-flex items-center gap-3 border-[3px] border-black bg-black px-6 py-4 text-sm font-black uppercase text-white no-underline shadow-[6px_6px_0_#f97316] transition hover:-translate-y-1 hover:shadow-[9px_9px_0_#f97316]" to="/lite/app">
+        <Link className="mt-8 inline-flex items-center gap-3 border-[3px] border-black bg-black px-6 py-4 text-sm font-black uppercase text-white no-underline shadow-[6px_6px_0_#f97316] transition hover:-translate-y-1 hover:shadow-[9px_9px_0_#f97316]" to="/app">
           Explore Landed Lite <Download className="h-5 w-5" />
         </Link>
       </div>
