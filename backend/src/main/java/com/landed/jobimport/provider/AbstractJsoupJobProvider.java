@@ -14,6 +14,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 abstract class AbstractJsoupJobProvider implements JobProvider {
     private static final int TIMEOUT_MS = 8_000;
@@ -60,6 +62,8 @@ abstract class AbstractJsoupJobProvider implements JobProvider {
         String company = clean(firstPresent(
                 hiringOrganization(jobPosting),
                 text(document, companySelectors()),
+                companyFromTitle(document.title()),
+                attribute(document, companyAttributeSelectors(), "alt"),
                 meta(document, "og:site_name"),
                 companyFromHost(uri)
         ));
@@ -82,6 +86,11 @@ abstract class AbstractJsoupJobProvider implements JobProvider {
 
     protected List<String> companySelectors() {
         return List.of("[data-qa='company-name']", ".company-name", ".posting-company", "[class*=company]");
+    }
+
+    /** Use logo alt text only for sources that supply a known company-logo selector. */
+    protected List<String> companyAttributeSelectors() {
+        return List.of();
     }
 
     protected List<String> locationSelectors() {
@@ -108,6 +117,16 @@ abstract class AbstractJsoupJobProvider implements JobProvider {
                 if (!value.isBlank()) {
                     return value;
                 }
+            }
+        }
+        return "";
+    }
+
+    protected String attribute(Document document, List<String> selectors, String attribute) {
+        for (String selector : selectors) {
+            for (Element element : document.select(selector)) {
+                String value = clean(element.attr(attribute));
+                if (!value.isBlank()) return value;
             }
         }
         return "";
@@ -251,5 +270,10 @@ abstract class AbstractJsoupJobProvider implements JobProvider {
         String host = uri.getHost() == null ? "" : uri.getHost().replaceFirst("^www\\.", "");
         String[] parts = host.split("\\.");
         return parts.length == 0 ? "" : parts[0];
+    }
+
+    private String companyFromTitle(String title) {
+        Matcher matcher = Pattern.compile("(?i)(?:job application for .+? at|apply for .+? at| at)\\s+([^|–—-]+)").matcher(title == null ? "" : title);
+        return matcher.find() ? clean(matcher.group(1)) : "";
     }
 }

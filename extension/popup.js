@@ -5,6 +5,7 @@ const message = byId('message');
 const apiUrlInput = byId('api-url');
 let activeJob = null;
 const DEFAULT_API_URL = 'https://landed-backend-nkxx.onrender.com/api/v1';
+const LOCAL_LITE_IMPORT_URL = 'http://localhost:3000/lite/import';
 const CONTENT_SCRIPT_HOSTS = [
   'linkedin.com',
   'greenhouse.io',
@@ -84,6 +85,44 @@ const setForm = (job) => {
   byId('application-form').hidden = false;
 };
 
+const extractFromPage = async (tab) => {
+  const fallback = { url: tab?.url || '', title: tab?.title || '' };
+  if (!tab?.id || !tab.url || !supportsPageExtraction(tab.url)) return fallback;
+
+  const pageJob = await new Promise((resolve) => {
+    chrome.tabs.sendMessage(tab.id, { type: 'EXTRACT_JOB' }, (response) => {
+      // Pages outside the extension's supported job boards have no content
+      // script. The URL still opens in Lite for a manual review.
+      void chrome.runtime.lastError;
+      resolve(response);
+    });
+  });
+
+  return pageJob ? { ...fallback, ...pageJob } : fallback;
+};
+
+const openLocalLite = async () => {
+  showMessage('Preparing Landed Lite import...');
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.url) throw new Error('Open a job posting first.');
+  const job = await extractFromPage(tab);
+  const params = new URLSearchParams();
+  const values = {
+    url: job.url || tab.url,
+    company: job.company,
+    role: job.role || job.title,
+    location: job.location,
+    description: job.description
+  };
+
+  Object.entries(values).forEach(([key, value]) => {
+    if (value) params.set(key, value);
+  });
+
+  await chrome.tabs.create({ url: `${LOCAL_LITE_IMPORT_URL}?${params.toString()}` });
+  window.close();
+};
+
 byId('login-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   showMessage('Connecting to Landed...');
@@ -116,6 +155,14 @@ byId('google-login').addEventListener('click', async () => {
     showMessage(error.message.includes('client_id')
       ? 'Add the Chrome extension Google client ID in manifest.json, then reload the extension.'
       : error.message);
+  }
+});
+
+byId('use-lite').addEventListener('click', async () => {
+  try {
+    await openLocalLite();
+  } catch (error) {
+    showMessage(error.message || 'Could not open Landed Lite.');
   }
 });
 
@@ -176,6 +223,14 @@ byId('application-form').addEventListener('submit', async (event) => {
 byId('open-landed').addEventListener('click', async () => {
   await chrome.tabs.create({ url: portalUrlFor() });
   window.close();
+});
+
+byId('save-to-lite').addEventListener('click', async () => {
+  try {
+    await openLocalLite();
+  } catch (error) {
+    showMessage(error.message || 'Could not open Landed Lite.');
+  }
 });
 
 byId('logout').addEventListener('click', async () => {

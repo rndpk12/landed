@@ -19,12 +19,19 @@ public class GreenhouseProvider extends AbstractJsoupJobProvider {
 
     @Override
     protected List<String> companySelectors() {
-        return List.of("#logo", ".company-name", ".app-title + div");
+        return List.of(".company-name", "[data-qa='company-name']", "[class*=company]");
+    }
+
+    @Override
+    protected List<String> companyAttributeSelectors() {
+        // Current Greenhouse boards place the employer logo here. Avoid a broad
+        // header-image selector: it can pick up the generic job-board brand.
+        return List.of(".image-container img.logo", "#logo img", ".company-logo img");
     }
 
     @Override
     protected List<String> locationSelectors() {
-        return List.of(".location", ".app-location", "#header .location");
+        return List.of(".job__location > div", ".job__location", "#header .location", ".app-location", ".location", "[data-qa='location']", "[class*=location]", ".app-title + div");
     }
 
     @Override

@@ -17,6 +17,9 @@
         <form id="login-form">
           <label>API URL<input id="api-url" type="url" required /></label>
           <button id="google-login" class="google" type="button"><span class="google-mark">G</span> Continue with Google</button>
+          <p class="divider"><span>or use Lite</span></p>
+          <button id="use-lite" class="secondary" type="button">Save to Landed Lite <span>↗</span></button>
+          <p class="muted">No account needed. Opens your local Lite workspace.</p>
           <p class="divider"><span>or with email</span></p>
           <label>Email<input id="email" type="email" autocomplete="email" required /></label>
           <label>Password<input id="password" type="password" autocomplete="current-password" required /></label>
@@ -29,6 +32,7 @@
         <h1>Job capture</h1>
         <p id="page-url" class="url"></p>
         <button id="import-job" class="secondary" type="button">Read job page <span>↗</span></button>
+        <button id="save-to-lite" class="secondary" type="button">Open in Landed Lite <span>↗</span></button>
         <form id="application-form" hidden>
           <label>Company<input id="company" required /></label>
           <label>Role<input id="role" required /></label>

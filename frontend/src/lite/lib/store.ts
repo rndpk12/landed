@@ -1,4 +1,5 @@
 import type { LiteApplication, LiteApplicationInput } from '../types/application';
+import { formatCompanyName } from './format';
 
 const STORE_KEY = 'landed-lite.applications.v1';
 
@@ -11,7 +12,9 @@ const read = (): LiteApplication[] => {
   try {
     const value = window.localStorage.getItem(STORE_KEY);
     const parsed = value ? JSON.parse(value) : [];
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed)
+      ? parsed.map((application) => ({ ...application, company: formatCompanyName(application.company ?? '') }))
+      : [];
   } catch {
     return [];
   }
@@ -26,7 +29,7 @@ export const liteStore = {
   get: (id: string) => read().find((application) => application.id === id),
   create: (input: LiteApplicationInput) => {
     const timestamp = new Date().toISOString();
-    const application: LiteApplication = { ...input, id: createId(), createdAt: timestamp, updatedAt: timestamp };
+    const application: LiteApplication = { ...input, company: formatCompanyName(input.company), id: createId(), createdAt: timestamp, updatedAt: timestamp };
     write([application, ...read()]);
     return application;
   },
@@ -34,7 +37,7 @@ export const liteStore = {
     const applications = read();
     const existing = applications.find((application) => application.id === id);
     if (!existing) return undefined;
-    const updated = { ...existing, ...input, updatedAt: new Date().toISOString() };
+    const updated = { ...existing, ...input, company: formatCompanyName(input.company), updatedAt: new Date().toISOString() };
     write(applications.map((application) => (application.id === id ? updated : application)));
     return updated;
   },
