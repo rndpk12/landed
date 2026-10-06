@@ -80,7 +80,7 @@ export const LiteLandingPage = () => (
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[530px] lg:justify-self-end">
+        <div className="relative mx-auto w-full max-w-[530px] lg:-translate-y-8 lg:justify-self-end">
           <div className="absolute -right-2 -top-7 rotate-3 border-[3px] border-black bg-[#5dd6e4] px-3 py-2 text-xs font-black uppercase shadow-[4px_4px_0_#000] sm:right-4">
             Saved locally
           </div>

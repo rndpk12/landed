@@ -12,10 +12,11 @@ export const LiteDashboardPage = () => {
     <div className="space-y-6">
       <section className="border-[4px] border-black bg-white p-6 shadow-[7px_7px_0_#000] sm:p-8">
         <p className="text-xs font-black uppercase tracking-[0.14em] text-[#f97316]">Landed Lite</p>
-        <div className="mt-2 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-          <div><h1 className="text-4xl font-black uppercase leading-none sm:text-5xl">Your job search, simplified.</h1><p className="mt-3 max-w-xl font-bold leading-6 text-[#666]">No account. No cloud sync. Just a clear view of your next move.</p></div>
+        <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-4xl font-black uppercase leading-none sm:text-5xl">Your job search, simplified.</h1>
           <Link className="btn-primary shrink-0 no-underline" to="/applications/new"><Plus className="h-4 w-4" /> Add job</Link>
         </div>
+        <p className="mt-3 max-w-xl font-bold leading-6 text-[#666]">No account. No cloud sync. Just a clear view of your next move.</p>
       </section>
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
