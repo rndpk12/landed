@@ -85,7 +85,8 @@ public class ApiRateLimitFilter extends OncePerRequestFilter {
                 && (path.startsWith("/api/v1/resumes")
                 || path.startsWith("/api/v1/resume-match")
                 || path.startsWith("/api/v1/job-import")
-                || path.startsWith("/api/v1/lite/job-import"))) {
+                || path.startsWith("/api/v1/lite/job-import")
+                || path.startsWith("/api/v1/lite/feedback"))) {
             return new Bucket("heavy", heavyLimit);
         }
         return new Bucket("general", generalLimit);
