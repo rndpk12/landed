@@ -42,23 +42,23 @@ export const LiteLandingPage = () => (
       </div>
     </nav>
 
-    <section id="top" className="brutal-grid px-5 pb-16 pt-14 md:px-8 md:pb-24 md:pt-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_0.92fr]">
+    <section id="top" className="brutal-grid px-5 pb-10 pt-10 md:px-8 md:pb-12 md:pt-12">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 lg:grid-cols-[1fr_0.92fr]">
         <div>
-          <div className="mb-6 inline-flex items-center gap-2 border-2 border-black bg-[#f9d44a] px-3 py-2 text-xs font-black uppercase shadow-[3px_3px_0_#000]">
+          <div className="mb-4 inline-flex items-center gap-2 border-2 border-black bg-[#f9d44a] px-3 py-2 text-xs font-black uppercase shadow-[3px_3px_0_#000]">
             <MousePointer2 className="h-4 w-4" /> Browser-first job tracking
           </div>
           <p className="mb-4 text-sm font-black uppercase tracking-[0.16em] text-[#f97316]">Meet Landed Lite</p>
-          <h1 className="max-w-3xl text-[clamp(3.3rem,7vw,6.7rem)] font-black uppercase leading-[0.86] tracking-[-0.06em]">
+          <h1 className="max-w-3xl text-[clamp(2.8rem,5.4vw,5.5rem)] font-black uppercase leading-[0.86] tracking-[-0.06em]">
             Your job search.<br />
             <span className="whitespace-nowrap text-[#f97316]">No account.</span><br />
             No noise.
           </h1>
-          <p className="mt-7 max-w-xl text-lg font-bold leading-8 text-[#535353]">
+          <p className="mt-5 max-w-xl text-base font-bold leading-7 text-[#535353]">
             Landed Lite is a focused job tracker that starts in seconds. Add applications, follow your pipeline,
             and keep your search private on your device.
           </p>
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-6 flex flex-wrap gap-4">
             <Link
               className="inline-flex items-center gap-3 border-[3px] border-black bg-black px-6 py-4 text-sm font-black uppercase text-white no-underline shadow-[6px_6px_0_#f97316] transition hover:-translate-y-1 hover:shadow-[9px_9px_0_#f97316]"
               to="/app"
@@ -73,14 +73,14 @@ export const LiteLandingPage = () => (
               See how it works
             </button>
           </div>
-          <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm font-black text-[#4d4d4d]">
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm font-black text-[#4d4d4d]">
             {['No credit card', 'No registration', 'Private by default'].map((item) => (
               <span className="flex items-center gap-2" key={item}><Check className="h-4 w-4 text-[#f97316]" />{item}</span>
             ))}
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[530px] lg:-translate-y-8 lg:justify-self-end">
+        <div className="relative mx-auto w-full max-w-[455px] lg:-translate-y-4 lg:justify-self-end">
           <div className="absolute -right-2 -top-7 rotate-3 border-[3px] border-black bg-[#5dd6e4] px-3 py-2 text-xs font-black uppercase shadow-[4px_4px_0_#000] sm:right-4">
             Saved locally
           </div>
