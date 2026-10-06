@@ -180,7 +180,7 @@ export const LiteLandingPage = () => (
     <footer className="border-t-[3px] border-black bg-[#fffaf1] px-5 py-7 md:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 text-sm font-bold text-[#555] sm:flex-row sm:items-center sm:justify-between">
         <BrandLogo className="h-8 w-auto" />
-        <p>Private job tracking, without the account overhead.</p>
+        <p>Made with ❤️ for 🇮🇳</p>
         <p>© 2026 Landed</p>
       </div>
     </footer>
