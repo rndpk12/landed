@@ -51,7 +51,7 @@ export const LiteLandingPage = () => (
           <p className="mb-4 text-sm font-black uppercase tracking-[0.16em] text-[#f97316]">Meet Landed Lite</p>
           <h1 className="max-w-3xl text-[clamp(3.3rem,7vw,6.7rem)] font-black uppercase leading-[0.86] tracking-[-0.06em]">
             Your job search.<br />
-            <span className="text-[#f97316]">No account.</span><br />
+            <span className="whitespace-nowrap text-[#f97316]">No account.</span><br />
             No noise.
           </h1>
           <p className="mt-7 max-w-xl text-lg font-bold leading-8 text-[#535353]">
