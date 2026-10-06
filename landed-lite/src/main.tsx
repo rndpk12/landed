@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { LiteAppShell } from './components/LiteAppShell';
 import { LiteApplicationFormPage } from './pages/LiteApplicationFormPage';
 import { LiteApplicationsPage } from './pages/LiteApplicationsPage';
@@ -26,4 +27,9 @@ const router = createBrowserRouter([
   { path: '*', element: <LiteLandingPage /> }
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><RouterProvider router={router} /></React.StrictMode>);
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+    <Analytics />
+  </React.StrictMode>
+);
