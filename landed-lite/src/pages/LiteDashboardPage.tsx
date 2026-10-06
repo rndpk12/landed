@@ -1,7 +1,6 @@
 import { ArrowRight, BriefcaseBusiness, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LiteStatusBadge } from '../components/LiteStatusBadge';
-import { LiteFeedbackForm } from '../components/LiteFeedbackForm';
 import { liteStore } from '../lib/store';
 import { LITE_STATUSES } from '../types/application';
 
@@ -48,8 +47,6 @@ export const LiteDashboardPage = () => {
           </div>
         )}
       </section>
-
-      <LiteFeedbackForm compact />
     </div>
   );
 };

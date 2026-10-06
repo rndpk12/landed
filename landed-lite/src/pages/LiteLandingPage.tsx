@@ -1,7 +1,6 @@
 import { ArrowRight, Check, Chrome, Download, LockKeyhole, MousePointer2, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BrandLogo } from '../components/BrandLogo';
-import { LiteFeedbackForm } from '../components/LiteFeedbackForm';
 
 const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -32,9 +31,7 @@ export const LiteLandingPage = () => (
           <button className="text-xs font-black uppercase hover:text-[#f97316]" type="button" onClick={() => scrollTo('privacy')}>
             Your data
           </button>
-          <button className="text-xs font-black uppercase hover:text-[#f97316]" type="button" onClick={() => scrollTo('feedback')}>
-            Feedback
-          </button>
+          <Link className="text-xs font-black uppercase text-black no-underline hover:text-[#f97316]" to="/feedback">Feedback</Link>
         </div>
         <button
           className="inline-flex items-center gap-2 border-[3px] border-black bg-[#f97316] px-3 py-2 text-xs font-black uppercase text-white shadow-[4px_4px_0_#000] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#000]"
@@ -168,10 +165,6 @@ export const LiteLandingPage = () => (
           </ul>
         </div>
       </div>
-    </section>
-
-    <section id="feedback" className="brutal-grid border-t-[3px] border-black px-5 py-16 md:px-8 md:py-20">
-      <LiteFeedbackForm />
     </section>
 
     <section id="get-started" className="border-t-[3px] border-black bg-[#f9d44a] px-5 py-16 text-center md:px-8 md:py-20">
