@@ -8,6 +8,7 @@ import { LiteAtsMatchPage } from './pages/LiteAtsMatchPage';
 import { LiteDashboardPage } from './pages/LiteDashboardPage';
 import { LiteImportPage } from './pages/LiteImportPage';
 import { LiteLandingPage } from './pages/LiteLandingPage';
+import { LiteResumeVaultPage } from './pages/LiteResumeVaultPage';
 import { LiteSettingsPage } from './pages/LiteSettingsPage';
 import './index.css';
 
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
   { path: '/applications', element: shell(<LiteApplicationsPage />) },
   { path: '/applications/new', element: shell(<LiteApplicationFormPage />) },
   { path: '/applications/:id/edit', element: shell(<LiteApplicationFormPage />) },
+  { path: '/resumes', element: shell(<LiteResumeVaultPage />) },
   { path: '/ats', element: shell(<LiteAtsMatchPage />) },
   { path: '/settings', element: shell(<LiteSettingsPage />) },
   { path: '*', element: <LiteLandingPage /> }

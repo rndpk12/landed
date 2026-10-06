@@ -1,4 +1,4 @@
-import { BriefcaseBusiness, LayoutDashboard, Link2, Settings2, Sparkles } from 'lucide-react';
+import { BriefcaseBusiness, FileText, LayoutDashboard, Link2, Settings2, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
 import { BrandLogo } from './BrandLogo';
@@ -7,6 +7,7 @@ const links = [
   { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/import', label: 'Import URL', icon: Link2 },
   { to: '/applications', label: 'Applications', icon: BriefcaseBusiness },
+  { to: '/resumes', label: 'Resume Vault', icon: FileText },
   { to: '/ats', label: 'ATS Match', icon: Sparkles },
   { to: '/settings', label: 'Settings', icon: Settings2 }
 ];

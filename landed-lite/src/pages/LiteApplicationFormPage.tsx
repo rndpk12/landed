@@ -1,12 +1,14 @@
 import { ArrowLeft, Link2, LoaderCircle, Save } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { apiClient } from '../lib/apiClient';
 import { formatCompanyName } from '../lib/format';
 import { liteStore } from '../lib/store';
+import { resumeStore } from '../lib/resumeStore';
 import { LITE_STATUSES, type LiteApplicationInput, type LiteStatus } from '../types/application';
+import type { LiteResume } from '../types/resume';
 
-const emptyApplication: LiteApplicationInput = { company: '', role: '', jobUrl: '', location: '', description: '', status: 'Saved', notes: '' };
+const emptyApplication: LiteApplicationInput = { company: '', role: '', jobUrl: '', location: '', description: '', resumeId: '', status: 'Saved', notes: '' };
 
 type ImportedJob = Pick<LiteApplicationInput, 'company' | 'role' | 'location' | 'description'>;
 
@@ -33,14 +35,16 @@ export const LiteApplicationFormPage = () => {
   const { id } = useParams();
   const existing = id ? liteStore.get(id) : undefined;
   const [form, setForm] = useState<LiteApplicationInput>(existing ? {
-    company: existing.company, role: existing.role, jobUrl: existing.jobUrl, location: existing.location, description: existing.description ?? '', status: existing.status, notes: existing.notes
+    company: existing.company, role: existing.role, jobUrl: existing.jobUrl, location: existing.location, description: existing.description ?? '', resumeId: existing.resumeId ?? '', status: existing.status, notes: existing.notes
   } : emptyApplication);
+  const [resumes, setResumes] = useState<LiteResume[]>([]);
   const [error, setError] = useState('');
   const [importing, setImporting] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const lastImportedUrl = useRef('');
   const navigate = useNavigate();
   const update = <Key extends keyof LiteApplicationInput>(key: Key, value: LiteApplicationInput[Key]) => setForm((current) => ({ ...current, [key]: value }));
+  useEffect(() => { void resumeStore.list().then(setResumes).catch(() => setError('Could not open the local resume vault.')); }, []);
   const importDetails = async () => {
     const jobUrl = form.jobUrl.trim();
     if (!jobUrl || jobUrl === lastImportedUrl.current || importing) return;
@@ -87,6 +91,7 @@ export const LiteApplicationFormPage = () => {
           <label className="text-xs font-black uppercase">Role<input className="input mt-2" value={form.role} onChange={(event) => update('role', event.target.value)} placeholder="e.g. Product Designer" /></label>
           <label className="text-xs font-black uppercase">Location<input className="input mt-2" value={form.location} onChange={(event) => update('location', event.target.value)} placeholder="Remote, Bengaluru, etc." /></label>
           <label className="text-xs font-black uppercase">Status<select className="input mt-2" value={form.status} onChange={(event) => update('status', event.target.value as LiteStatus)}>{LITE_STATUSES.map((status) => <option key={status}>{status}</option>)}</select></label>
+          <label className="text-xs font-black uppercase sm:col-span-2">Resume used for this application<select className="input mt-2" value={form.resumeId ?? ''} onChange={(event) => update('resumeId', event.target.value)}><option value="">Not selected</option>{resumes.map((resume) => <option key={resume.id} value={resume.id}>{resume.name}</option>)}</select>{resumes.length === 0 ? <span className="mt-2 block normal-case text-xs font-bold text-[#666]">Add a version in Resume Vault before mapping it to this job.</span> : null}</label>
           {highlights ? <section className="border-[3px] border-black bg-[#fffaf1] p-4 sm:col-span-2"><div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center"><div><p className="text-xs font-black uppercase text-[#f97316]">Simple job view</p><h2 className="text-lg font-black uppercase">Job highlights</h2></div><button className="text-xs font-black uppercase underline decoration-2 underline-offset-4" type="button" onClick={() => setShowDescription((visible) => !visible)}>{showDescription ? 'Hide full description' : 'View full description'}</button></div><p className="mt-3 text-sm font-bold leading-6 text-[#444]">{highlights.summary || 'The full job description is saved for ATS matching.'}</p><div className="mt-4 grid gap-4 md:grid-cols-2"><div><h3 className="text-xs font-black uppercase">What you will do</h3>{highlights.responsibilities.length ? <ul className="mt-2 space-y-2 pl-4 text-sm font-bold leading-5">{highlights.responsibilities.map((item) => <li key={item}>{item}</li>)}</ul> : <p className="mt-2 text-sm font-bold text-[#666]">Review the full description for responsibilities.</p>}</div><div><h3 className="text-xs font-black uppercase">What they are looking for</h3>{highlights.requirements.length ? <ul className="mt-2 space-y-2 pl-4 text-sm font-bold leading-5">{highlights.requirements.map((item) => <li key={item}>{item}</li>)}</ul> : <p className="mt-2 text-sm font-bold text-[#666]">Review the full description for requirements.</p>}</div></div>{highlights.skills.length ? <div className="mt-4"><h3 className="text-xs font-black uppercase">Detected skills</h3><div className="mt-2 flex flex-wrap gap-2">{highlights.skills.map((skill) => <span className="border-2 border-black bg-[#96d35f] px-2 py-1 text-xs font-black" key={skill}>{skill}</span>)}</div></div> : null}</section> : null}
           <section className="sm:col-span-2"><div className="flex items-center justify-between gap-3"><label className="text-xs font-black uppercase">Full job description</label>{highlights ? <button className="text-xs font-black uppercase underline decoration-2 underline-offset-4" type="button" onClick={() => setShowDescription((visible) => !visible)}>{showDescription ? 'Hide description' : 'Edit description'}</button> : null}</div>{showDescription || !form.description ? <textarea className="input mt-2 min-h-36 resize-y" value={form.description ?? ''} onChange={(event) => update('description', event.target.value)} placeholder="Paste the job description here to use Landed Lite ATS Match." /> : <p className="mt-2 text-sm font-bold text-[#666]">Full description is saved for ATS Match. Select “View full description” to edit it.</p>}</section>
           <label className="text-xs font-black uppercase sm:col-span-2">Notes<textarea className="input mt-2 min-h-32 resize-y" value={form.notes} onChange={(event) => update('notes', event.target.value)} placeholder="Add interview dates, contact names, reminders, or anything useful." /></label>

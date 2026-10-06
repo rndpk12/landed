@@ -9,6 +9,7 @@ export type LiteApplication = {
   jobUrl: string;
   location: string;
   description?: string;
+  resumeId?: string;
   status: LiteStatus;
   notes: string;
   createdAt: string;

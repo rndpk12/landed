@@ -1,14 +1,17 @@
 import { Plus, Search, Trash2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LiteStatusBadge } from '../components/LiteStatusBadge';
 import { liteStore } from '../lib/store';
+import { resumeStore } from '../lib/resumeStore';
 import { LITE_STATUSES, type LiteStatus } from '../types/application';
 
 export const LiteApplicationsPage = () => {
   const [applications, setApplications] = useState(() => liteStore.list());
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<LiteStatus | 'All'>('All');
+  const [resumeNames, setResumeNames] = useState<Record<string, string>>({});
+  useEffect(() => { void resumeStore.list().then((resumes) => setResumeNames(Object.fromEntries(resumes.map((resume) => [resume.id, resume.name])))); }, []);
   const visible = useMemo(() => applications.filter((item) => (status === 'All' || item.status === status) && `${item.company} ${item.role} ${item.location}`.toLowerCase().includes(query.toLowerCase())), [applications, query, status]);
   const remove = (id: string) => {
     if (window.confirm('Remove this application from Landed Lite?')) { liteStore.remove(id); setApplications(liteStore.list()); }
@@ -24,7 +27,7 @@ export const LiteApplicationsPage = () => {
         {visible.length === 0 ? <div className="p-10 text-center font-bold text-[#666]">No applications match this view.</div> : visible.map((application) => (
           <div className="flex flex-col gap-4 border-b-[3px] border-black p-4 last:border-b-0 sm:flex-row sm:items-center" key={application.id}>
             <span className="grid h-11 w-11 shrink-0 place-items-center border-2 border-black bg-black text-lg font-black text-white">{application.company[0]?.toUpperCase()}</span>
-            <Link className="min-w-0 flex-1 text-black no-underline" to={`/applications/${application.id}/edit`}><p className="truncate text-lg font-black">{application.role}</p><p className="truncate text-sm font-bold text-[#666]">{application.company}{application.location ? ` · ${application.location}` : ''}</p></Link>
+            <Link className="min-w-0 flex-1 text-black no-underline" to={`/applications/${application.id}/edit`}><p className="truncate text-lg font-black">{application.role}</p><p className="truncate text-sm font-bold text-[#666]">{application.company}{application.location ? ` · ${application.location}` : ''}</p>{application.resumeId ? <p className="mt-1 truncate text-xs font-black text-[#f97316]">Resume: {resumeNames[application.resumeId] ?? 'Removed from vault'}</p> : null}</Link>
             <div className="flex items-center justify-between gap-3 sm:justify-end"><LiteStatusBadge status={application.status} /><button aria-label={`Delete ${application.role}`} className="grid h-9 w-9 place-items-center border-2 border-black bg-white text-[#d33] hover:bg-[#ffe5e5]" type="button" onClick={() => remove(application.id)}><Trash2 className="h-4 w-4" /></button></div>
           </div>
         ))}
