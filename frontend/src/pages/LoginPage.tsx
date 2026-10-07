@@ -335,7 +335,7 @@ const GoogleAuthControl = ({
       loginTimeout.current = null;
       setPending(false);
       onError('Google sign-in timed out. Please allow popups and try again.');
-    }, 20_000);
+    }, 75_000);
 
     try {
       googleLogin();

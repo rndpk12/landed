@@ -4,6 +4,7 @@ import type { User } from '../types/user';
 
 const MOCK_USER_KEY = 'landed.mockUser';
 const MOCK_AUTH_USERS_KEY = 'landed.mockAuthUsers';
+const GOOGLE_SIGN_IN_TIMEOUT_MS = 55_000;
 
 type StoredMockUser = User & {
   password: string;
@@ -163,7 +164,9 @@ export const authApi = {
     }
   },
   async signInWithGoogle(credential: string): Promise<AuthResponse> {
-    const response = await apiClient.post<AuthResponse>('/auth/google', { credential });
+    const response = await apiClient.post<AuthResponse>('/auth/google', { credential }, {
+      timeout: GOOGLE_SIGN_IN_TIMEOUT_MS
+    });
     return response.data;
   },
   isGoogleSignInConfigured,
