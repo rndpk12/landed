@@ -37,7 +37,7 @@ export const LiteFeedbackForm = ({ compact = false }: { compact?: boolean }) => 
       <form className="space-y-7 p-6 sm:p-8" onSubmit={(event) => void submit(event)}>
         <div>
           <label className="text-xs font-black uppercase" htmlFor="feedback-category">I want to share</label>
-          <select className="mt-3 w-full border-[3px] border-black bg-white px-5 py-4 text-base font-normal sm:text-lg" id="feedback-category" value={category} onChange={(event) => setCategory(event.target.value as FeedbackCategory)}>
+          <select className="mt-3 min-h-[72px] w-full border-[3px] border-black bg-white px-5 py-4 text-xl font-medium [font-family:Inter,ui-sans-serif,system-ui,sans-serif]" id="feedback-category" value={category} onChange={(event) => setCategory(event.target.value as FeedbackCategory)}>
             <option value="feedback">General feedback</option>
             <option value="feature">Feature idea</option>
             <option value="review">Review</option>
