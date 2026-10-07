@@ -2,10 +2,8 @@ import { LoaderCircle, MessageSquareHeart, Send } from 'lucide-react';
 import { FormEvent, useState } from 'react';
 import { apiClient } from '../lib/apiClient';
 
-type FeedbackCategory = 'feedback' | 'feature' | 'review';
-
 export const LiteFeedbackForm = ({ compact = false }: { compact?: boolean }) => {
-  const [category, setCategory] = useState<FeedbackCategory>('feedback');
+  const category = 'feedback';
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
@@ -35,14 +33,6 @@ export const LiteFeedbackForm = ({ compact = false }: { compact?: boolean }) => 
         <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#555]">Tell us what works, what is missing, or leave a short review. Your application data is never included.</p>
       </div>
       <form className="space-y-7 p-6 sm:p-8" onSubmit={(event) => void submit(event)}>
-        <div>
-          <label className="text-xs font-black uppercase" htmlFor="feedback-category">I want to share</label>
-          <select className="mt-3 min-h-[72px] w-full border-[3px] border-black bg-white px-5 py-4 text-xl font-bold text-[#a8b1c1] outline-none focus:outline-none focus:ring-0 focus:ring-offset-0 [font-family:Inter,ui-sans-serif,system-ui,sans-serif]" id="feedback-category" value={category} onChange={(event) => setCategory(event.target.value as FeedbackCategory)}>
-            <option className="font-bold text-[#a8b1c1]" value="feedback">General feedback</option>
-            <option className="font-bold text-[#a8b1c1]" value="feature">Feature idea</option>
-            <option className="font-bold text-[#a8b1c1]" value="review">Review</option>
-          </select>
-        </div>
         <div>
           <label className="text-xs font-black uppercase" htmlFor="feedback-message">Your message</label>
           <textarea className="mt-3 min-h-36 w-full resize-y border-[3px] border-black bg-[#fffaf1] p-4 text-sm font-bold leading-6 outline-none focus:bg-white" id="feedback-message" maxLength={4000} placeholder="For example: I would love a way to…" required value={message} onChange={(event) => { setMessage(event.target.value); setStatus('idle'); }} />
