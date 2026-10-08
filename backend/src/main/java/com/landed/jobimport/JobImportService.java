@@ -15,7 +15,7 @@ import java.util.Set;
 @Service
 public class JobImportService {
     private static final Set<String> LITE_IMPORT_HOSTS = Set.of(
-            "linkedin.com", "greenhouse.io", "lever.co", "myworkdayjobs.com", "workdayjobs.com", "ashbyhq.com", "naukri.com", "heizen.work"
+            "linkedin.com", "greenhouse.io", "lever.co", "myworkdayjobs.com", "workdayjobs.com", "ashbyhq.com", "naukri.com", "heizen.work", "juspay.io"
     );
     private final JobSourceDetector detector;
     private final Map<JobSource, JobProvider> providers;
@@ -38,7 +38,7 @@ public class JobImportService {
     public JobImportResponse importLiteJob(String url) {
         URI uri = parseUri(url);
         if (!isLiteImportHost(uri.getHost())) {
-            throw new BadRequestException("Landed Lite can automatically import LinkedIn, Greenhouse, Lever, Workday, Ashby, Naukri, and Heizen URLs. Use the browser extension or enter other job sites manually.");
+            throw new BadRequestException("Landed Lite can automatically import LinkedIn, Greenhouse, Lever, Workday, Ashby, Naukri, Heizen, and Juspay URLs. Use the browser extension or enter other job sites manually.");
         }
         return importUri(uri);
     }

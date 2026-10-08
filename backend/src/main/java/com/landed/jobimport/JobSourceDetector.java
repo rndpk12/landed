@@ -28,6 +28,9 @@ public class JobSourceDetector {
         if (host.contains("naukri.com")) {
             return JobSource.NAUKRI;
         }
+        if (host.equals("juspay.io") || host.endsWith(".juspay.io")) {
+            return JobSource.JUSPAY;
+        }
 
         return JobSource.GENERIC;
     }

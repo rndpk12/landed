@@ -7,5 +7,6 @@ public enum JobSource {
     WORKDAY,
     ASHBY,
     NAUKRI,
+    JUSPAY,
     GENERIC
 }
