@@ -34,7 +34,9 @@ abstract class AbstractJsoupJobProvider implements JobProvider {
             Document document = Jsoup.connect(uri.toString())
                     .userAgent("LandedJobImporter/1.0 (+https://landed.local)")
                     .timeout(TIMEOUT_MS)
-                    .followRedirects(true)
+                    // Only fetch pre-approved job-board hosts. Following a redirect could
+                    // otherwise turn a safe public URL into an internal-network request.
+                    .followRedirects(false)
                     .get();
             return extractFromDocument(uri, document);
         } catch (IOException exception) {

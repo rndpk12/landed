@@ -65,7 +65,7 @@ app:
       prefix: ${RESUME_STORAGE_PREFIX:resumes/}
       path-style-access: ${RESUME_STORAGE_PATH_STYLE:false}
   job-import:
-    allowed-hosts: ${JOB_IMPORT_ALLOWED_HOSTS:linkedin.com,naukri.com,greenhouse.io,boards.greenhouse.io,job-boards.greenhouse.io}
+    allowed-hosts: ${JOB_IMPORT_ALLOWED_HOSTS:linkedin.com,naukri.com,greenhouse.io,boards.greenhouse.io,job-boards.greenhouse.io,lever.co,workdayjobs.com,myworkdayjobs.com,ashbyhq.com,heizen.work,juspay.io}
     connect-timeout-seconds: 5
     request-timeout-seconds: 10
   rate-limit:
@@ -80,9 +80,11 @@ app:
 
 springdoc:
   swagger-ui:
+    enabled: ${SWAGGER_UI_ENABLED:false}
     path: /swagger-ui.html
     operations-sorter: method
   api-docs:
+    enabled: ${OPENAPI_DOCS_ENABLED:false}
     path: /v3/api-docs
 
 management:

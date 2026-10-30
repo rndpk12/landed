@@ -26,10 +26,13 @@ public class ProductionEnvironmentValidator implements ApplicationRunner {
 
         require("DATABASE_URL");
         require("JWT_SECRET");
+        require("GOOGLE_CLIENT_ID");
         validateCorsOrigins(require("CORS_ALLOWED_ORIGINS"));
+        validateExtensionIds(environment.getProperty("CORS_ALLOWED_EXTENSION_IDS", ""));
         if ("s3".equalsIgnoreCase(environment.getProperty("RESUME_STORAGE_TYPE", "s3"))) {
             require("RESUME_STORAGE_BUCKET");
         }
+        validateDatabaseUrl(require("DATABASE_URL"));
     }
 
     private String require(String name) {
@@ -61,6 +64,22 @@ public class ProductionEnvironmentValidator implements ApplicationRunner {
         }
         if (!hasOrigin) {
             throw new IllegalStateException("CORS_ALLOWED_ORIGINS must contain at least one production origin");
+        }
+    }
+
+    private void validateDatabaseUrl(String databaseUrl) {
+        String normalized = databaseUrl.toLowerCase();
+        if (normalized.contains("sslmode=disable") || normalized.contains("ssl=false")) {
+            throw new IllegalStateException("DATABASE_URL must require TLS in production");
+        }
+    }
+
+    private void validateExtensionIds(String extensionIds) {
+        for (String extensionId : extensionIds.split(",")) {
+            String value = extensionId.trim();
+            if (!value.isBlank() && !value.matches("[a-p]{32}")) {
+                throw new IllegalStateException("CORS_ALLOWED_EXTENSION_IDS contains an invalid Chrome extension ID");
+            }
         }
     }
 }

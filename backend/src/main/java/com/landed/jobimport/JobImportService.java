@@ -5,29 +5,35 @@ import com.landed.jobimport.dto.JobImportResponse;
 import com.landed.jobimport.provider.ExtractedJob;
 import com.landed.jobimport.provider.JobProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class JobImportService {
-    private static final Set<String> LITE_IMPORT_HOSTS = Set.of(
-            "linkedin.com", "greenhouse.io", "lever.co", "myworkdayjobs.com", "workdayjobs.com", "ashbyhq.com", "naukri.com", "heizen.work", "juspay.io"
-    );
     private final JobSourceDetector detector;
     private final Map<JobSource, JobProvider> providers;
+    private final Set<String> allowedHosts;
 
-    public JobImportService(JobSourceDetector detector, List<JobProvider> providers) {
+    public JobImportService(JobSourceDetector detector, List<JobProvider> providers,
+                            @Value("${app.job-import.allowed-hosts}") String allowedHosts) {
         this.detector = detector;
         this.providers = new EnumMap<>(JobSource.class);
         providers.forEach(provider -> this.providers.put(provider.source(), provider));
+        this.allowedHosts = java.util.Arrays.stream(allowedHosts.toLowerCase().split(","))
+                .map(String::trim)
+                .filter(host -> !host.isBlank())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     public JobImportResponse importJob(String url) {
         URI uri = parseUri(url);
+        requireAllowedHost(uri);
         return importUri(uri);
     }
 
@@ -37,7 +43,7 @@ public class JobImportService {
      */
     public JobImportResponse importLiteJob(String url) {
         URI uri = parseUri(url);
-        if (!isLiteImportHost(uri.getHost())) {
+        if (!isAllowedHost(uri.getHost())) {
             throw new BadRequestException("Landed Lite can automatically import LinkedIn, Greenhouse, Lever, Workday, Ashby, Naukri, Heizen, and Juspay URLs. Use the browser extension or enter other job sites manually.");
         }
         return importUri(uri);
@@ -54,10 +60,16 @@ public class JobImportService {
         }
     }
 
-    private boolean isLiteImportHost(String host) {
+    private void requireAllowedHost(URI uri) {
+        if (!isAllowedHost(uri.getHost())) {
+            throw new BadRequestException("This job board is not supported for direct import.");
+        }
+    }
+
+    private boolean isAllowedHost(String host) {
         if (host == null) return false;
         String normalized = host.toLowerCase();
-        return LITE_IMPORT_HOSTS.stream().anyMatch(domain -> normalized.equals(domain) || normalized.endsWith("." + domain));
+        return allowedHosts.stream().anyMatch(domain -> normalized.equals(domain) || normalized.endsWith("." + domain));
     }
 
     private URI parseUri(String url) {
