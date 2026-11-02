@@ -3,7 +3,6 @@ module Authentication
 
   included do
     before_action :authenticate_request!
-    helper_method :current_user
   end
 
   private

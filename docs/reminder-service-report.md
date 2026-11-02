@@ -52,28 +52,37 @@ Errors use `{ "error": { "code": "...", "message": "...", "details": {} } }`.
 
 ## 5. Verification results
 
-Verified in this checkout:
+Verified in this checkout on 2026-11-02:
 
-- Ruby syntax: **34/34 Ruby files passed** `ruby -c`.
-- Frontend TypeScript: **passed** with `npx tsc -p frontend/tsconfig.app.json --noEmit`.
+- Rails test database preparation: **passed** against disposable PostgreSQL 17.
+- RSpec: **10 passed, 0 failed, 0 pending**.
+- RSpec covered API authentication/authorization, CRUD, validation, scheduling enqueue, job processing, cancellation, and duplicate-notification prevention.
+- Sidekiq/Redis/PostgreSQL smoke test: **passed**. A real Redis-backed worker processed a reminder and persisted exactly one notification while marking the reminder `processed`.
+- Spring Boot: **12 passed, 0 failed** (`mvn test -q`; counts read from Surefire XML reports).
 - Frontend lint: **passed** with `npm run lint`.
-- Frontend production build: **passed** with `npm run build` (Vite emitted only existing bundle-size and dependency annotation warnings).
-- Git whitespace check: **passed** with `git diff --check`.
+- Frontend production build: **passed** with `npm run build` (Vite emitted bundle-size and dependency annotation warnings only).
 
-Not executed:
+Not verified:
 
-- Rails migrations, RSpec, and a real Sidekiq/Redis workflow could not run because Docker Desktop's daemon was unavailable and local Ruby is 2.6 without Rails/Bundler dependencies. No RSpec pass/fail count is claimed.
-- Existing Spring Boot tests were not changed or run in this task because the request explicitly said to ignore the Spring Boot backend.
-- End-to-end browser verification against a live Rails service remains pending until Docker or a Ruby 3.3/Rails environment is available.
+- A browser-driven end-to-end flow from the React page through the live Rails HTTP server into Sidekiq was not run.
+- Retry behavior was configured (`retry_on ... attempts: 5`) but no forced transient-failure test was executed against a live worker.
+- No production-scale or external-service reliability claim is made.
 
 ## 6. Setup and execution
 
 ```sh
-cd reminder-service
-cp .env.example .env
-# Set JWT_SECRET to the existing Landed Base64 JWT secret.
-docker compose up --build
-bundle exec rspec
+cd /Users/rndpk/Documents/Projects/Landed
+JWT_SECRET='<existing Base64 JWT secret>' docker compose -f reminder-service/docker-compose.yml up -d postgres redis
+JWT_SECRET='<existing Base64 JWT secret>' docker compose -f reminder-service/docker-compose.yml run --rm \
+  -e RAILS_ENV=test \
+  -e DATABASE_URL=postgresql://landed:<password>@postgres:5432/landed_reminders_test \
+  web bundle exec rails db:prepare
+JWT_SECRET='<existing Base64 JWT secret>' docker compose -f reminder-service/docker-compose.yml run --rm \
+  -e RAILS_ENV=test \
+  -e DATABASE_URL=postgresql://landed:<password>@postgres:5432/landed_reminders_test \
+  web bundle exec rspec --format documentation
+mvn test -q -f backend/pom.xml
+cd frontend && npm run lint && npm run build
 ```
 
 Set `VITE_REMINDER_API_BASE_URL=http://localhost:3001/api` for the React app when running locally.
@@ -82,12 +91,13 @@ Set `VITE_REMINDER_API_BASE_URL=http://localhost:3001/api` for the React app whe
 
 - The service requires the Rails process to share the Landed PostgreSQL database so it can resolve users and applications.
 - Notifications are persisted in-app; no email or push delivery is implemented.
-- A live Redis/PostgreSQL smoke test is still required before production deployment.
+- The live smoke test used disposable local containers and a temporary test database; production deployment remains unverified.
+- The current Rails RSpec suite does not inject a failing dependency to exercise Sidekiq's retry path end-to-end.
 
 ## 8. Resume-ready LaTeX bullets
 
 ```latex
-\item Built a standalone Ruby on Rails reminder API with PostgreSQL ownership checks, structured JSON errors, and JWT bearer authentication.
-\item Implemented Sidekiq/Redis scheduling with row locking, retry tracking, and unique notification persistence for idempotent background processing.
-\item Integrated a React + TypeScript reminder dashboard with CRUD workflows, validation, loading/error states, and application-linked schedules.
+\item Delivered a Ruby on Rails reminder API with PostgreSQL ownership checks, JWT authentication, and structured JSON errors; verified with 10 RSpec examples passing.
+\item Implemented Redis-backed Sidekiq reminder processing with row locking and unique notification persistence; verified one real worker execution and duplicate prevention.
+\item Preserved the Spring Boot backend while passing 12 existing Maven tests and a production React build with lint checks passing.
 ```

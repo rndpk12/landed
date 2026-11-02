@@ -4,6 +4,6 @@ class LegacyUser < ActiveRecord::Base
   self.inheritance_column = :_type_disabled
 
   def readonly?
-    true
+    !Rails.env.test?
   end
 end

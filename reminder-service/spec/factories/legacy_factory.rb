@@ -18,7 +18,7 @@ FactoryBot.define do
   factory :reminder do
     id { SecureRandom.uuid }
     association :user, factory: :legacy_user
-    association :job_application, factory: :legacy_job_application
+    job_application { association(:legacy_job_application, user: user) }
     message { "Follow up with the recruiter" }
     scheduled_at { 1.day.from_now }
     status { "scheduled" }
