@@ -1,0 +1,7 @@
+.git
+.bundle
+log
+tmp
+spec
+coverage
+.env
