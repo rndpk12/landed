@@ -11,6 +11,7 @@ import { LoginPage } from '../pages/LoginPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { ResumeMatchPage } from '../pages/ResumeMatchPage';
 import { ResumeVaultPage } from '../pages/ResumeVaultPage';
+import { RemindersPage } from '../pages/RemindersPage';
 import { SettingsPage } from '../pages/SettingsPage';
 
 const router = createBrowserRouter([
@@ -28,6 +29,7 @@ const router = createBrowserRouter([
           { path: '/resumes', element: <ResumeVaultPage />, handle: { title: 'Resume Vault' } },
           { path: '/resume-match', element: <ResumeMatchPage />, handle: { title: 'Resume Match' } },
           { path: '/interview-notes', element: <InterviewNotesPage />, handle: { title: 'Interview Notes' } },
+          { path: '/reminders', element: <RemindersPage />, handle: { title: 'Reminders' } },
           { path: '/analytics', element: <AnalyticsPage />, handle: { title: 'Analytics' } },
           { path: '/settings', element: <SettingsPage />, handle: { title: 'Settings' } }
         ]

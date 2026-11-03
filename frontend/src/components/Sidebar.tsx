@@ -7,6 +7,7 @@ import {
   Home,
   LogOut,
   NotebookTabs,
+  CalendarClock,
   Settings
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -18,6 +19,7 @@ const navItems = [
   { label: 'Resume Vault', path: '/resumes', icon: FileText },
   { label: 'Resume Match', path: '/resume-match', icon: FileSearch },
   { label: 'Interview Notes', path: '/interview-notes', icon: NotebookTabs },
+  { label: 'Reminders', path: '/reminders', icon: CalendarClock },
   { label: 'Analytics', path: '/analytics', icon: BarChart3 }
 ];
 
