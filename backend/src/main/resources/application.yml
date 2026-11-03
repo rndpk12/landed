@@ -21,6 +21,11 @@ spring:
       jakarta.persistence.query.timeout: ${DB_QUERY_TIMEOUT_MS:10000}
   flyway:
     enabled: true
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
+      repositories:
+        enabled: false
   jackson:
     default-property-inclusion: non_null
   mvc:
@@ -70,6 +75,7 @@ app:
     request-timeout-seconds: 10
   rate-limit:
     enabled: ${RATE_LIMIT_ENABLED:true}
+    backend: ${RATE_LIMIT_BACKEND:memory}
     auth-per-minute: ${RATE_LIMIT_AUTH_PER_MINUTE:10}
     heavy-per-minute: ${RATE_LIMIT_HEAVY_PER_MINUTE:20}
     general-per-minute: ${RATE_LIMIT_GENERAL_PER_MINUTE:180}

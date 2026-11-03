@@ -4,6 +4,7 @@ import com.landed.security.JwtAuthenticationFilter;
 import com.landed.security.ApiRateLimitFilter;
 import com.landed.security.RestAccessDeniedHandler;
 import com.landed.security.RestAuthenticationEntryPoint;
+import com.landed.security.RequestCorrelationFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
@@ -33,6 +35,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,
                                             ApiRateLimitFilter rateLimitFilter,
+                                            RequestCorrelationFilter requestCorrelationFilter,
                                             RestAuthenticationEntryPoint entryPoint,
                                             RestAccessDeniedHandler accessDeniedHandler) throws Exception {
         return http
@@ -40,6 +43,10 @@ public class SecurityConfig {
                 .cors(cors -> {})
                 .headers(headers -> headers
                         .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'none'; frame-ancestors 'none'; base-uri 'none'"))
+                        .frameOptions(frame -> frame.deny())
+                        .contentTypeOptions(Customizer.withDefaults())
+                        .cacheControl(Customizer.withDefaults())
+                        .httpStrictTransportSecurity(hsts -> hsts.includeSubDomains(true).maxAgeInSeconds(31536000))
                         .referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.NO_REFERRER))
                         .permissionsPolicyHeader(permissions -> permissions.policy("camera=(), microphone=(), geolocation=(), payment=(), usb=()")))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -50,6 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**", "/api/v1/lite/job-import", "/api/v1/lite/feedback", "/actuator/health/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(requestCorrelationFilter, JwtAuthenticationFilter.class)
                 .addFilterAfter(rateLimitFilter, JwtAuthenticationFilter.class)
                 .build();
     }
@@ -91,7 +99,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
         configuration.setExposedHeaders(List.of("Location", "Retry-After", "X-RateLimit-Limit",
-                "X-RateLimit-Remaining"));
+                "X-RateLimit-Remaining", RequestCorrelationFilter.HEADER_NAME));
         // Authentication uses an Authorization bearer token, never browser cookies.
         // Disallowing cross-origin credentials prevents accidental credentialed CORS requests.
         configuration.setAllowCredentials(false);

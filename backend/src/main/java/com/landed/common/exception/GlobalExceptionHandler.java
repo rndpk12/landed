@@ -1,6 +1,7 @@
 package com.landed.common.exception;
 
 import com.landed.common.error.ApiError;
+import com.landed.security.RequestCorrelationFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -70,14 +71,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     ResponseEntity<ApiError> unexpected(Exception exception, HttpServletRequest request) {
-        log.error("Unhandled request error", exception);
+        log.error("Unhandled request error requestId={} method={} path={}",
+                RequestCorrelationFilter.requestId(request), request.getMethod(), request.getRequestURI(), exception);
         return error(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred", request, Map.of());
     }
 
     private ResponseEntity<ApiError> error(HttpStatus status, String message, HttpServletRequest request,
                                            Map<String, String> fieldErrors) {
         ApiError body = new ApiError(Instant.now(), status.value(), status.getReasonPhrase(), message,
-                request.getRequestURI(), fieldErrors);
+                request.getRequestURI(), fieldErrors, RequestCorrelationFilter.requestId(request));
         return ResponseEntity.status(status).body(body);
     }
 }
