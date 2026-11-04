@@ -1,68 +1,55 @@
-# Architecture Guide
+# Landed Architecture and Service Ownership
 
-Landed is a modular full-stack application. The repository separates product UI, API domains, deployment material, and developer documentation so each concern has a clear home.
+This is the authoritative map of Landed's deployable services. Keep these boundaries stable when changing environment variables or deployments.
+
+## Service ownership
+
+| Area | Source directory | Runtime | Browser base URL | Owns |
+|---|---|---|---|---|
+| Main authenticated app | `frontend/` + `backend/` | React on Vercel + Spring Boot on Render | `VITE_API_BASE_URL` → Spring `/api/v1` | Login, JWT sessions, applications, resumes, ATS/matching, notes, and main user data |
+| Reminders | `frontend/` + `reminder-service/` | Rails API on Render + Sidekiq worker + Render Redis | `VITE_REMINDER_API_BASE_URL` → Rails `/api` | Reminder CRUD, scheduled processing, and in-app notifications |
+| Lite/import/feedback compatibility | `landed-lite/`, `extension/`, `vercel-api/` | Vercel static app + Vercel Functions | Lite-specific variables | No-account Lite flows, URL import, extension handoff, and Lite feedback |
+| Database | Neon PostgreSQL | Managed PostgreSQL | `DATABASE_URL`/`DB_URL` (runtime-specific) | Persistent application data |
+| Job queue | Render Redis | Redis | `REDIS_URL` | Sidekiq queue and retry state |
+
+## Request flow
 
 ```text
-Landed/
-├── backend/                         # Spring Boot API
-│   └── src/
-│       ├── main/java/com/landed/
-│       │   ├── auth/                # Registration, email login, Google OAuth
-│       │   ├── application/         # Application pipeline and stage history
-│       │   ├── activity/            # User activity timeline
-│       │   ├── interview/           # Interview rounds and notes
-│       │   ├── jobimport/           # Job URL detection and provider adapters
-│       │   ├── resume/              # Resume storage, versions, processing, diffing
-│       │   ├── resumematch/         # Resume-to-job matching
-│       │   ├── resumeperformance/   # Resume conversion analytics
-│       │   ├── security/            # JWT, rate limiting, authentication filters
-│       │   ├── user/                # Profile management
-│       │   ├── config/              # Spring configuration
-│       │   └── common/              # API errors, exceptions, shared DTOs
-│       ├── main/resources/          # Spring configuration and Flyway migrations
-│       └── test/                    # Domain-focused unit tests
-├── frontend/                        # React + TypeScript application
-│   └── src/
-│       ├── components/              # Reusable UI, including landing-page components
-│       ├── context/                 # App-wide state providers
-│       ├── hooks/                   # Reusable React hooks
-│       ├── layout/                  # Authenticated workspace shell
-│       ├── lib/                     # HTTP client and browser utilities
-│       ├── pages/                   # Route-level product screens
-│       ├── routes/                  # Router and access control
-│       ├── services/                # Domain API clients
-│       └── types/                   # Shared TypeScript domain contracts
-├── extension/                       # Chrome MV3 job capture client
-│   ├── background.js                # Authenticated API bridge
-│   ├── content.js                   # Job-page extraction fallback
-│   └── popup.*                      # Connect, review, and save UI
-├── docs/                            # Engineering and deployment documentation
-├── compose.yaml                     # Local service orchestration
-├── Dockerfile                       # Production API image
-└── .env.example                     # Safe environment-variable template
+Browser
+  ├─ Main app ───────────────> Spring Boot API (Render) ─────> Neon PostgreSQL
+  │                                  └───────────────────────> Google OAuth/JWT
+  ├─ Reminders page ─────────> Rails Reminder API (Render) ─> Neon PostgreSQL
+  │                                  └───────────────────────> Redis ─> Sidekiq worker
+  └─ Lite/extension ─────────> Vercel Functions (Vercel) ───> Lite-compatible storage/API
 ```
 
-## Placement Rules
+Spring Boot remains the source of truth for the authenticated application domain. Rails shares the existing user and job-application records according to its read-only contract, and owns reminder/notification records. The Vercel API is not a replacement for the main authenticated Spring API.
 
-- Put backend work in the owning business-domain package. Keep controllers, services, repositories, entities, and DTOs together under that domain.
-- Put cross-domain backend code only in `common`, `security`, or `config`; do not create a generic dumping-ground package.
-- Add frontend route screens in `pages`, reusable visual units in `components`, server calls in `services`, and API-shaped contracts in `types`.
-- Keep feature-specific landing components under `frontend/src/components/landing`.
-- Add database changes as a new, ordered Flyway migration in `backend/src/main/resources/db/migration`—never edit an applied migration.
-- Keep secrets in local environment files or deployment secret managers. Never commit `.env`.
+## Routing rules
 
-## Verification
+- Main frontend: `VITE_API_BASE_URL=https://<spring-render-host>/api/v1`.
+- Main frontend reminders: `VITE_REMINDER_API_BASE_URL=https://<rails-render-host>/api`.
+- Do not point the main `VITE_API_BASE_URL` at Rails, Vercel, or a local service in production.
+- Do not point Lite at Spring unless a deliberate migration is planned and tested.
+- Keep the existing Spring/Render service during the Rails or Vercel migration; change one boundary at a time.
 
-Run these checks before merging changes:
+## Environment ownership
 
-```bash
-cd frontend && npm run lint && npm run build
-cd ../backend && mvn test
-```
+| Variable | Set on | Purpose |
+|---|---|---|
+| `VITE_API_BASE_URL` | Frontend Vercel project | Main Spring Boot API base URL |
+| `VITE_REMINDER_API_BASE_URL` | Frontend Vercel project | Rails reminder API base URL |
+| `VITE_GOOGLE_CLIENT_ID` | Frontend Vercel project | Google OAuth browser client |
+| `DATABASE_URL` or `DB_URL` | Backend/Rails runtime | Neon PostgreSQL connection; use the variable expected by that runtime |
+| `JWT_SECRET` | Spring and Rails runtimes | Shared token verification secret; never commit it |
+| `CORS_ALLOWED_ORIGINS` | API runtimes | Exact frontend origins, comma-separated |
+| `REDIS_URL` | Rails web and Sidekiq worker | Render Redis connection |
 
-For the full local stack:
+Use placeholders in documentation and dashboards; never paste credentials into Git, screenshots, issues, or logs.
 
-```bash
-docker compose up -d --build
-curl http://localhost:8080/actuator/health
-```
+## Deployment source of truth
+
+- Vercel deploys the frontend and Lite/Function projects.
+- Render deploys Spring Boot, the Rails reminder web service, the Sidekiq worker, and Redis.
+- Neon supplies PostgreSQL for the production environments.
+- Before releasing, verify each frontend variable points to the matching service above and run an authenticated smoke test for both APIs.

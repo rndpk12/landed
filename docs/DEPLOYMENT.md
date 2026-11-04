@@ -4,7 +4,13 @@ This guide deploys Landed with:
 
 - Frontend: Vercel
 - Backend: Render
+- Reminder API: Render (Rails) plus a Sidekiq worker
+- Reminder queue: Render Redis
 - Database: Neon PostgreSQL
+
+## Source of truth and service boundaries
+
+Read [ARCHITECTURE.md](./ARCHITECTURE.md) before changing deployment variables. The main authenticated frontend uses the Spring Boot API. Reminders use the separate Rails API. The Vercel Functions are for Lite/import/extension compatibility and are not the main authenticated API.
 
 ## Production Architecture
 
@@ -19,6 +25,7 @@ JWT authentication is stateless, so the API can run as a single Render web servi
 | Variable | Example |
 |---|---|
 | `VITE_API_BASE_URL` | `https://landed-backend-nkxx.onrender.com/api/v1` |
+| `VITE_REMINDER_API_BASE_URL` | `https://landed-reminders-api.onrender.com/api` |
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth web client ID |
 
 ### Backend, Render

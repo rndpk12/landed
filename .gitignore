@@ -9,8 +9,12 @@ target/
 *.iml
 .DS_Store
 .env
+.neon
 *.log
 node_modules/
 dist/
 .vite/
 *.tsbuildinfo
+
+# Benchmark output is generated locally and may contain environment-specific timing.
+/benchmarks/results/
